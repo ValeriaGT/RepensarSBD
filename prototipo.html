@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Habla con un par · Prototipo</title>
+<style>
+  :root{
+    --azul:#0b2a5b; --azul-2:#163f80; --amarillo:#f2b705; --tinta:#1d2433; --gris:#5b6475;
+    --linea:#dfe3ea; --fondo:#f5f7fa; --blanco:#fff; --par:#2f6f73; --par-osc:#0f3436; --par-claro:#e6f2f1; --rojo:#b3261e;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--tinta);background:var(--fondo);line-height:1.5}
+  a{color:inherit}
+  button{font:inherit;cursor:pointer}
+  h1,h2,h3{line-height:1.15}
+  .proto-tag{position:fixed;left:12px;bottom:12px;z-index:50;background:#111;color:#fff;font-size:12px;padding:6px 10px;border-radius:6px;opacity:.85}
+  .todo{background:#fdecea;color:var(--rojo);border-radius:4px;padding:0 4px;font-size:.9em}
+
+  /* ---------- Portada simulada ---------- */
+  .topbar{background:var(--azul);color:#cfd8ea;font-size:12px}
+  .topbar .wrap{display:flex;gap:18px;flex-wrap:wrap;padding:6px 16px;max-width:1180px;margin:auto}
+  header.main{background:#fff;border-bottom:1px solid var(--linea)}
+  header.main .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 16px;max-width:1180px;margin:auto}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand .logo{width:46px;height:46px;border-radius:50%;background:var(--azul);color:#fff;display:grid;place-items:center;font-weight:800;font-size:14px;flex:none}
+  .brand small{display:block;color:var(--gris);font-size:12px}
+  nav.menu{display:flex;gap:20px;font-size:14px;font-weight:600;color:var(--azul);flex-wrap:wrap}
+  nav.menu span{white-space:nowrap}
+
+  .carousel{position:relative;max-width:1180px;margin:20px auto;padding:0 16px}
+  .slides{position:relative;aspect-ratio:1180/420;border-radius:10px;overflow:hidden;background:#ccd}
+  .slide{position:absolute;inset:0;opacity:0;transition:opacity .6s;display:flex;align-items:center;padding:6% 7%}
+  .slide.on{opacity:1;z-index:1}
+  .slide.generic{background:linear-gradient(120deg,var(--azul),var(--azul-2));color:#fff}
+  .slide.generic h2{font-size:clamp(20px,3.4vw,40px);margin:0 0 8px}
+  .slide.generic p{margin:0;opacity:.85}
+
+  .slide.par{background:var(--par-claro);color:#12383a;cursor:pointer;gap:5%}
+  .slide.par .txt{flex:1.3}
+  .kicker{display:inline-block;background:#fff;border-radius:999px;padding:4px 12px;font-size:clamp(11px,1.2vw,14px);font-weight:600;color:var(--par);margin-bottom:12px}
+  .slide.par h2{font-size:clamp(24px,4.4vw,54px);margin:0 0 10px;color:var(--par-osc)}
+  .slide.par p{font-size:clamp(13px,1.6vw,19px);margin:0 0 18px;max-width:34ch}
+  .slide.par .cta{display:inline-block;background:var(--par);color:#fff;border-radius:8px;padding:clamp(8px,1.1vw,13px) clamp(14px,2vw,24px);font-weight:700;font-size:clamp(13px,1.5vw,17px)}
+  .slide.par .art{flex:1;display:flex;justify-content:center}
+  .bubbles{position:relative;width:min(100%,300px);aspect-ratio:1}
+  .bubble{position:absolute;border-radius:22px;padding:6% 8%;font-size:clamp(11px,1.4vw,16px);font-weight:600;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+  .bubble.a{left:0;top:12%;background:#fff;color:var(--par-osc);border-bottom-left-radius:4px}
+  .bubble.b{right:0;top:46%;background:var(--par);color:#fff;border-bottom-right-radius:4px}
+  .bubble.c{left:10%;bottom:4%;background:#fff;color:var(--gris);font-weight:500}
+
+  .car-ctrl{display:flex;justify-content:center;gap:8px;margin-top:10px}
+  .car-ctrl button{width:10px;height:10px;border-radius:50%;border:0;background:#b8c0cf;padding:0}
+  .car-ctrl button.on{background:var(--azul)}
+  .arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.85);font-size:18px}
+  .arrow.prev{left:26px}.arrow.next{right:26px}
+
+  .home-sections{max-width:1180px;margin:0 auto 40px;padding:0 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+  .card{background:#fff;border:1px solid var(--linea);border-radius:10px;padding:16px}
+  .card h3{margin:0 0 6px;font-size:15px;color:var(--azul)}
+  .ph{height:10px;background:#e8ebf1;border-radius:4px;margin:8px 0}
+  .ph.s{width:60%}
+
+  .view{display:none}
+  .view.on{display:block}
+
+  /* ---------- Landing ---------- */
+  .lp-bar{background:#fff;border-bottom:1px solid var(--linea);position:sticky;top:0;z-index:20}
+  .lp-bar .wrap{max-width:1040px;margin:auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .lp-bar .back{background:none;border:0;color:var(--azul);font-weight:600;padding:0}
+  .lp-bar .go{background:var(--par);color:#fff;border:0;border-radius:8px;padding:8px 14px;font-weight:700;font-size:14px}
+  .urgent{background:#fff4e5;border-bottom:1px solid #f3d9b1;font-size:13px}
+  .urgent .wrap{max-width:1040px;margin:auto;padding:8px 16px}
+  .urgent b{color:#8a4b00}
+
+  .sec{max-width:1040px;margin:auto;padding:48px 16px}
+  .sec h2{font-size:clamp(24px,3vw,32px);margin:0 0 8px;color:var(--par-osc)}
+  .sec .sub{color:var(--gris);margin:0 0 28px;max-width:60ch}
+
+  .hero{background:var(--par-claro)}
+  .hero .sec{display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:center;padding-top:56px;padding-bottom:56px}
+  .hero h1{font-size:clamp(32px,5vw,52px);margin:0 0 14px;color:var(--par-osc)}
+  .hero p.lead{font-size:clamp(16px,1.8vw,19px);margin:0 0 22px;max-width:44ch}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 26px;padding:0;list-style:none}
+  .chips li{background:#fff;border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600;color:var(--par-osc)}
+  .btn{display:inline-block;background:var(--par);color:#fff;border:0;border-radius:10px;padding:14px 22px;font-weight:700;font-size:17px;text-decoration:none}
+  .btn.ghost{background:transparent;color:var(--par-osc);border:1.5px solid var(--par);margin-left:8px}
+  .hero .chat{background:#fff;border-radius:16px;padding:20px;box-shadow:0 10px 30px rgba(15,52,54,.08);display:flex;flex-direction:column;gap:10px}
+  .msg{max-width:85%;padding:10px 14px;border-radius:16px;font-size:15px}
+  .msg.me{background:var(--fondo);align-self:flex-start;border-bottom-left-radius:4px}
+  .msg.par{background:var(--par);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+  .chat small{color:var(--gris);text-align:center;font-size:12px}
+
+  .mirror{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+  .mirror div{background:#fff;border:1px solid var(--linea);border-radius:12px;padding:18px}
+  .mirror q{display:block;font-weight:700;color:var(--par-osc);margin-bottom:8px;quotes:"“" "”"}
+  .mirror p{margin:0;color:var(--gris);font-size:15px}
+
+  .isnot{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .isnot > div{border-radius:12px;padding:20px}
+  .isnot .is{background:var(--par-claro)}
+  .isnot .not{background:#fff;border:1px solid var(--linea)}
+  .isnot h3{margin:0 0 10px;font-size:18px}
+  .isnot ul{margin:0;padding-left:20px}
+  .isnot li{margin-bottom:6px}
+
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;counter-reset:s;list-style:none;padding:0;margin:0}
+  .steps li{background:#fff;border:1px solid var(--linea);border-radius:12px;padding:18px;counter-increment:s}
+  .steps li::before{content:counter(s);display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--par);color:#fff;font-weight:700;margin-bottom:10px}
+  .steps b{display:block;margin-bottom:4px}
+  .steps span{color:var(--gris);font-size:15px}
+
+  .privacy{background:#fff;border:1px solid var(--linea);border-radius:12px;padding:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+  .privacy div b{display:block;color:var(--par-osc);margin-bottom:4px}
+  .privacy div span{color:var(--gris);font-size:15px}
+
+  /* ---------- Agenda ---------- */
+  .agenda-wrap{background:#fff;border-top:1px solid var(--linea);border-bottom:1px solid var(--linea)}
+  .booking{display:grid;grid-template-columns:1fr 300px;gap:28px;align-items:start}
+  .step{border:1px solid var(--linea);border-radius:12px;padding:18px;margin-bottom:14px;background:#fff}
+  .step h3{margin:0 0 4px;font-size:17px;display:flex;gap:10px;align-items:center}
+  .step h3 .n{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--par);color:#fff;font-size:13px;flex:none}
+  .step .hint{display:block;color:var(--gris);font-size:14px;margin:0 0 14px}
+  label.q{display:block;font-weight:600;margin:12px 0 6px;font-size:15px}
+  input[type=text],select,textarea{width:100%;padding:10px 12px;border:1px solid #c9cfda;border-radius:8px;font:inherit;background:#fff}
+  .choices{display:flex;flex-wrap:wrap;gap:8px}
+  .choices label{display:flex;align-items:center;gap:6px;border:1px solid #c9cfda;border-radius:8px;padding:8px 12px;background:#fff;font-size:14px;cursor:pointer}
+  .choices label:has(input:checked){border-color:var(--par);background:var(--par-claro)}
+  .choices input{accent-color:var(--par)}
+  .switch{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--linea);border-radius:8px;padding:12px;cursor:pointer;background:#fff}
+  .switch:has(input:checked){border-color:var(--par);background:var(--par-claro)}
+  .switch input{margin-top:3px;accent-color:var(--par);width:18px;height:18px;flex:none}
+  .switch small{display:block;color:var(--gris);font-weight:400}
+
+  .who-mode{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .who-mode label{border:1.5px solid var(--linea);border-radius:10px;padding:12px;cursor:pointer;display:block}
+  .who-mode label:has(input:checked){border-color:var(--par);background:var(--par-claro)}
+  .who-mode input{accent-color:var(--par);margin-right:6px}
+  .who-mode small{display:block;color:var(--gris);margin-top:2px}
+
+  .peers{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:12px}
+  .peer{border:1.5px solid var(--linea);border-radius:12px;padding:12px;cursor:pointer;background:#fff;text-align:left;display:block;width:100%}
+  .peer.sel{border-color:var(--par);background:var(--par-claro)}
+  .peer .top{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+  .av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff;flex:none}
+  .peer b{display:block}
+  .peer small{color:var(--gris);font-size:13px}
+  .peer .tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+  .peer .tags span{font-size:12px;background:var(--fondo);border-radius:999px;padding:2px 8px}
+  .peer .mod{font-size:12px;color:var(--par);font-weight:600;margin-top:6px;display:block}
+  .empty{color:var(--gris);font-size:14px;padding:10px;background:var(--fondo);border-radius:8px}
+
+  .days{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:12px}
+  .day{flex:none;width:64px;border:1.5px solid var(--linea);border-radius:10px;padding:8px 4px;text-align:center;background:#fff}
+  .day small{display:block;color:var(--gris);font-size:12px;text-transform:capitalize}
+  .day b{font-size:18px}
+  .day.sel{border-color:var(--par);background:var(--par);color:#fff}
+  .day.sel small{color:#dfeeed}
+  .day:disabled{opacity:.35;cursor:not-allowed}
+  .slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
+  .slot{border:1.5px solid var(--linea);border-radius:8px;padding:8px;background:#fff;font-weight:600}
+  .slot.sel{border-color:var(--par);background:var(--par);color:#fff}
+  .slot small{display:block;font-weight:400;font-size:11px;opacity:.8}
+  .legend{font-size:13px;color:var(--gris);margin-top:10px}
+
+  .summary{position:sticky;top:70px;background:var(--par-claro);border-radius:12px;padding:18px}
+  .summary h3{margin:0 0 12px;font-size:17px;color:var(--par-osc)}
+  .summary dl{margin:0 0 14px;display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:14px}
+  .summary dt{color:var(--gris)}
+  .summary dd{margin:0;font-weight:600}
+  .primary{background:var(--par);color:#fff;border:0;border-radius:10px;padding:13px 18px;font-weight:700;font-size:16px;width:100%}
+  .primary:disabled{opacity:.45;cursor:not-allowed}
+  .summary .free{font-size:13px;color:var(--par-osc);margin:10px 0 0;text-align:center}
+
+  details{background:#fff;border:1px solid var(--linea);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+  summary{font-weight:700;cursor:pointer;color:var(--par-osc)}
+  details p{margin:10px 0 0;color:var(--gris)}
+
+  .lp-foot{background:var(--par-osc);color:#d5e6e5;font-size:14px}
+  .lp-foot .wrap{max-width:1040px;margin:auto;padding:28px 16px;display:grid;gap:8px}
+  .lp-foot b{color:#fff}
+
+  /* ---------- Confirmación y encuesta ---------- */
+  .flow{max-width:620px;margin:0 auto;padding:40px 16px 70px}
+  .flow h1{font-size:28px;margin:0 0 10px;color:var(--par-osc)}
+  .flow .lead{color:var(--gris);margin:0 0 20px}
+  .ok{width:56px;height:56px;border-radius:50%;background:var(--par);color:#fff;display:grid;place-items:center;font-size:30px;margin-bottom:14px}
+  .ticket{background:#fff;border:1px solid var(--linea);border-radius:12px;padding:18px;margin-bottom:18px}
+  .ticket dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:8px 14px}
+  .ticket dt{color:var(--gris)}
+  .ticket dd{margin:0;font-weight:600}
+  .linkbtn{background:none;border:0;color:var(--azul);font-weight:600;padding:8px 0}
+  .scale label{flex:1;justify-content:center}
+  .field{margin-bottom:18px}
+
+  /* ---------- Panel de facilitador ---------- */
+  .fac-btn{position:fixed;right:12px;bottom:12px;z-index:50;background:var(--azul);color:#fff;border:0;border-radius:999px;padding:8px 14px;font-size:13px}
+  .fac{position:fixed;right:12px;bottom:56px;z-index:50;width:min(340px,calc(100vw - 24px));max-height:72vh;overflow:auto;background:#fff;border:1px solid var(--linea);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.15);padding:14px;font-size:13px;display:none}
+  .fac.on{display:block}
+  .fac h4{margin:0 0 8px;font-size:14px}
+  .fac table{width:100%;border-collapse:collapse;margin-bottom:10px}
+  .fac td{padding:4px 0;border-bottom:1px solid #eef0f4}
+  .fac td:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+  .fac tr.sep td{padding-top:10px;color:var(--gris);font-weight:600;border-bottom:0}
+  .fac .log{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--gris);max-height:140px;overflow:auto;background:var(--fondo);padding:6px;border-radius:6px}
+  .fac .row{display:flex;gap:6px;margin-top:8px}
+  .fac .row button{flex:1;border:1px solid var(--linea);background:#fff;border-radius:6px;padding:6px}
+
+  @media (max-width:820px){
+    nav.menu{display:none}
+    .slides{aspect-ratio:4/5}
+    .slide.par{flex-direction:column;align-items:flex-start;justify-content:center}
+    .slide.par .art,.arrow{display:none}
+    .hero .sec,.booking,.isnot{grid-template-columns:1fr}
+    .hero .chat{display:none}
+    .summary{position:static}
+    .who-mode{grid-template-columns:1fr}
+    .btn.ghost{margin:10px 0 0}
+  }
+</style>
+</head>
+<body>
+
+<div class="proto-tag">Prototipo · no es el sitio oficial · perfiles y horarios de ejemplo</div>
+
+<!-- ================= PORTADA SIMULADA ================= -->
+<section class="view on" id="v-home">
+  <div class="topbar"><div class="wrap">
+    <span>Biblioteca</span><span>Repositorio</span><span>Calendario académico</span><span>Directorio</span><span>Portal de Estudiantes</span>
+  </div></div>
+  <header class="main"><div class="wrap">
+    <div class="brand"><div class="logo">UCA</div><div><b>Universidad Centroamericana</b><small>José Simeón Cañas</small></div></div>
+    <nav class="menu"><span>Admisión</span><span>Oferta académica</span><span>Vida estudiantil</span><span>Acerca de la UCA</span><span>Graduados</span></nav>
+  </div></header>
+
+  <div class="carousel">
+    <div class="slides">
+      <div class="slide generic"><div><h2>Inscripción ciclo 01-2027</h2><p>Banner existente (simulado)</p></div></div>
+      <div class="slide par" id="banner-par" role="link" tabindex="0" aria-label="Habla con un par: conoce el programa y agenda">
+        <div class="txt">
+          <span class="kicker">Para estudiantes UCA</span>
+          <h2>¿Semana pesada?<br>Habla con un par.</h2>
+          <p>Una conversación de 20 a 30 minutos con un estudiante formado para escuchar. Gratis, y anónima si quieres.</p>
+          <span class="cta">Conocer y agendar →</span>
+        </div>
+        <div class="art" aria-hidden="true">
+          <div class="bubbles">
+            <div class="bubble a">No sé por dónde empezar…</div>
+            <div class="bubble b">Te escucho. Cuéntame.</div>
+            <div class="bubble c">Virtual o presencial</div>
+          </div>
+        </div>
+      </div>
+      <div class="slide generic" style="background:linear-gradient(120deg,#5b2a86,#8a3fb8)"><div><h2>Tutorías de acompañamiento</h2><p>Banner existente (simulado)</p></div></div>
+    </div>
+    <button class="arrow prev" aria-label="Anterior" onclick="go(-1)">‹</button>
+    <button class="arrow next" aria-label="Siguiente" onclick="go(1)">›</button>
+    <div class="car-ctrl" id="dots"></div>
+  </div>
+
+  <div class="home-sections">
+    <div class="card"><h3>Eventos</h3><div class="ph"></div><div class="ph s"></div><div class="ph"></div></div>
+    <div class="card"><h3>Noticias</h3><div class="ph"></div><div class="ph"></div><div class="ph s"></div></div>
+    <div class="card"><h3>Toma nota</h3><div class="ph s"></div><div class="ph"></div><div class="ph"></div></div>
+  </div>
+</section>
+
+<!-- ================= LANDING ================= -->
+<section class="view" id="v-landing">
+  <div class="lp-bar"><div class="wrap">
+    <button class="back" onclick="show('v-home')">← UCA</button>
+    <a class="go" href="#agenda">Agendar</a>
+  </div></div>
+  <div class="urgent"><div class="wrap">
+    <b>¿Estás en peligro o piensas en hacerte daño?</b> No esperes una cita: llama ya a la <b>línea 131</b> (Minsal) o a la Clínica de Asistencia Psicológica UCA <span class="todo">contacto por confirmar</span>.
+  </div></div>
+
+  <!-- Hero -->
+  <div class="hero"><div class="sec">
+    <div>
+      <span class="kicker">Escucha entre pares · UCA</span>
+      <h1>No tienes que resolverlo todo solo.</h1>
+      <p class="lead">Habla con otro estudiante de la UCA, formado para escuchar y con supervisión de psicólogos. Sin juicios, a tu ritmo y en un horario que encaje entre tus clases.</p>
+      <ul class="chips">
+        <li>Gratis</li><li>Puede ser anónimo</li><li>20 a 30 min</li><li>Virtual o presencial</li>
+      </ul>
+      <a class="btn" href="#agenda">Elegir día y hora</a><a class="btn ghost" href="#que-es">¿Qué es esto?</a>
+    </div>
+    <div class="chat" aria-hidden="true">
+      <div class="msg me">Siento que no doy con todo. Pero tampoco es para ir al psicólogo, creo…</div>
+      <div class="msg par">Está bien no saberlo todavía. Cuéntame qué ha pasado esta semana.</div>
+      <div class="msg me">Los parciales, y en la casa también…</div>
+      <small>Ejemplo de cómo empieza una conversación</small>
+    </div>
+  </div></div>
+
+  <!-- Espejo de necesidades -->
+  <div class="sec">
+    <h2>¿Te suena alguna de estas?</h2>
+    <p class="sub">No hace falta que sea algo grave. Si alguna te suena, ya es motivo suficiente para conversar.</p>
+    <div class="mirror">
+      <div><q>No es para tanto… pero no se me pasa.</q><p>No tiene que ser una crisis. Hablarlo a tiempo evita que crezca.</p></div>
+      <div><q>No quiero que nadie se entere.</q><p>Puedes agendar sin dar tu nombre y elegir a alguien que no sea de tu facultad.</p></div>
+      <div><q>Entre clases no me queda tiempo.</q><p>Son 20 a 30 minutos, también por videollamada, en horarios de almuerzo y por la tarde.</p></div>
+      <div><q>Siento que no doy con todo y he pensado en dejarlo.</q><p>Muchos estudiantes de primer año lo han pensado. Hablarlo te ayuda a ver opciones antes de decidir.</p></div>
+      <div><q>No sé a quién acudir ni cuánto cuesta.</q><p>Es gratis y empieza aquí. Si necesitas más, tu par te acompaña a dar el siguiente paso.</p></div>
+    </div>
+  </div>
+
+  <!-- Qué es / qué no es -->
+  <div class="sec" id="que-es" style="padding-top:0">
+    <h2>Qué es y qué no es</h2>
+    <p class="sub">Es un primer paso. No reemplaza a un psicólogo, y te ayuda a llegar a uno si lo necesitas.</p>
+    <div class="isnot">
+      <div class="is">
+        <h3>Es</h3>
+        <ul>
+          <li>Una conversación con un estudiante de años superiores, formado en escucha.</li>
+          <li>Un espacio para ordenar lo que sientes, sin que te juzguen.</li>
+          <li>Acompañado: los pares tienen supervisión del Departamento de Psicología y Salud Pública de la UCA.</li>
+          <li>Un puente: si hace falta, te conecta con la clínica de la UCA.</li>
+        </ul>
+      </div>
+      <div class="not">
+        <h3>No es</h3>
+        <ul>
+          <li>Terapia ni diagnóstico.</li>
+          <li>Un registro en tu expediente académico.</li>
+          <li>Un servicio de emergencias. Para eso está la línea 131.</li>
+          <li>Un compromiso: puedes ir una sola vez.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cómo funciona -->
+  <div class="sec" style="padding-top:0">
+    <h2>Cómo funciona</h2>
+    <p class="sub">Tres pasos, y en ninguno tienes que explicar por qué.</p>
+    <ol class="steps">
+      <li><b>Eliges con quién y cuándo</b><span>Un par en particular o el primero disponible. Virtual o presencial.</span></li>
+      <li><b>Te confirmamos</b><span>Por el medio que tú elijas. Si es virtual, te llega el enlace.</span></li>
+      <li><b>Conversas 20 a 30 minutos</b><span>Al final decides si quieres volver, si quieres hablar con un profesional o si te basta con eso.</span></li>
+    </ol>
+  </div>
+
+  <!-- Privacidad -->
+  <div class="sec" style="padding-top:0">
+    <h2>Tu privacidad, en concreto</h2>
+    <p class="sub">Lo que te preocupa, resuelto con hechos, no con promesas generales.</p>
+    <div class="privacy">
+      <div><b>Sin nombre, si quieres</b><span>Usa un alias. Solo necesitamos un medio para confirmarte la cita.</span></div>
+      <div><b>Lejos de tu facultad</b><span>Puedes pedir que te asignen a alguien de otra facultad.</span></div>
+      <div><b>Queda entre ustedes</b><span>Lo que cuentas no se comparte con tus profesores ni con tu familia. La única excepción es si tu vida está en riesgo: en ese caso te ayudamos a buscar atención profesional.</span></div>
+      <div><b>Solo para medir, sin identificarte</b><span>Te preguntamos año y facultad para saber si el programa funciona, nunca para identificarte. <span class="todo">política de datos por confirmar con la UCA</span></span></div>
+    </div>
+  </div>
+
+  <!-- ================= AGENDA ================= -->
+  <div class="agenda-wrap" id="agenda"><div class="sec">
+    <h2>Agenda tu conversación</h2>
+    <p class="sub">Toma un minuto. Puedes cancelar o cambiarla cuando quieras.</p>
+
+    <div class="booking">
+      <form id="f-book" novalidate>
+
+        <!-- 1. Sobre ti -->
+        <div class="step">
+          <h3><span class="n">1</span>Sobre ti</h3>
+          <span class="hint">Solo para medir el programa y, si quieres, no asignarte a alguien de tu facultad.</span>
+          <label class="q">¿En qué año estás?</label>
+          <div class="choices">
+            <label><input type="radio" name="anio" value="1.º" required>1.º</label>
+            <label><input type="radio" name="anio" value="2.º">2.º</label>
+            <label><input type="radio" name="anio" value="3.º">3.º</label>
+            <label><input type="radio" name="anio" value="4.º">4.º</label>
+            <label><input type="radio" name="anio" value="5.º+">5.º o más</label>
+          </div>
+          <label class="q" for="facultad">Facultad</label>
+          <select id="facultad" name="facultad" required>
+            <option value="">Elige una opción</option>
+            <option value="FIA">Ingeniería y Arquitectura</option>
+            <option value="FCSH">Ciencias Sociales y Humanidades</option>
+            <option value="FCEE">Ciencias Económicas y Empresariales</option>
+            <option value="otra">Otra (completar lista oficial)</option>
+            <option value="nd">Prefiero no decir</option>
+          </select>
+        </div>
+
+        <!-- 2. Con quién -->
+        <div class="step">
+          <h3><span class="n">2</span>¿Con quién quieres hablar?</h3>
+          <span class="hint">Todos los pares están formados y supervisados.</span>
+          <div class="who-mode">
+            <label><input type="radio" name="modo" value="cualquiera" checked><b>Con quien esté disponible</b><small>Más horarios, te asignamos a alguien</small></label>
+            <label><input type="radio" name="modo" value="elegir"><b>Quiero elegir</b><small>Ve los perfiles y escoge</small></label>
+          </div>
+          <label class="switch"><input type="checkbox" id="otraFac" checked>
+            <span><b>Prefiero alguien de otra facultad</b><small>Así es menos probable que se conozcan.</small></span>
+          </label>
+          <label class="q">¿Cómo prefieres conversar?</label>
+          <div class="choices">
+            <label><input type="radio" name="modalidad" value="ambas" checked>Me da igual</label>
+            <label><input type="radio" name="modalidad" value="virtual">Virtual</label>
+            <label><input type="radio" name="modalidad" value="presencial">Presencial</label>
+          </div>
+          <div class="peers" id="peers" hidden></div>
+        </div>
+
+        <!-- 3. Cuándo -->
+        <div class="step">
+          <h3><span class="n">3</span>¿Cuándo?</h3>
+          <span class="hint">Próximas dos semanas. Los horarios cambian según con quién y cómo quieras hablar.</span>
+          <div class="days" id="days"></div>
+          <div class="slots" id="slots"></div>
+          <p class="legend">V = virtual · P = presencial, en un espacio privado del campus <span class="todo">lugar por confirmar</span></p>
+        </div>
+
+        <!-- 4. Contacto -->
+        <div class="step">
+          <h3><span class="n">4</span>¿Cómo te confirmamos?</h3>
+          <span class="hint">Solo lo usamos para coordinar la cita.</span>
+          <label class="switch"><input type="checkbox" id="anon" name="anonimo">
+            <span><b>Quiero que sea anónimo</b><small>No te pedimos tu nombre. Puedes usar un alias y un correo que no te identifique.</small></span>
+          </label>
+          <div id="nameField">
+            <label class="q" for="nombre">¿Cómo te llamamos?</label>
+            <input type="text" id="nombre" name="nombre" autocomplete="given-name">
+          </div>
+          <div id="aliasField" hidden>
+            <label class="q" for="alias">Alias <small style="font-weight:400;color:var(--gris)">(opcional)</small></label>
+            <input type="text" id="alias" name="alias" placeholder="Ej. Luna">
+          </div>
+          <label class="q" for="contacto">Correo o WhatsApp</label>
+          <input type="text" id="contacto" name="contacto" required>
+          <label class="q" for="tema">¿Quieres adelantarle algo a tu par? <small style="font-weight:400;color:var(--gris)">(opcional)</small></label>
+          <textarea id="tema" name="tema" rows="3"></textarea>
+          <label class="switch" style="margin-top:14px"><input type="checkbox" id="consent" required>
+            <span>Entiendo que es una conversación de apoyo entre pares, no una consulta psicológica, y que si mi vida está en riesgo se buscará atención profesional.</span>
+          </label>
+        </div>
+      </form>
+
+      <!-- Resumen -->
+      <aside class="summary" aria-live="polite">
+        <h3>Tu conversación</h3>
+        <dl>
+          <dt>Con</dt><dd id="s-who">Quien esté disponible</dd>
+          <dt>Día</dt><dd id="s-day">—</dd>
+          <dt>Hora</dt><dd id="s-time">—</dd>
+          <dt>Cómo</dt><dd id="s-mod">—</dd>
+          <dt>Nombre</dt><dd id="s-name">—</dd>
+        </dl>
+        <button class="primary" id="confirmar" form="f-book" type="submit" disabled>Confirmar cita</button>
+        <p class="free" id="s-missing">Elige día y hora para continuar</p>
+      </aside>
+    </div>
+  </div></div>
+
+  <!-- FAQ -->
+  <div class="sec">
+    <h2>Preguntas frecuentes</h2>
+    <details><summary>¿Cuánto cuesta?</summary><p>Nada. Es gratis para todos los estudiantes de la UCA.</p></details>
+    <details><summary>¿Quiénes son los pares?</summary><p>Estudiantes de años superiores que se formaron en escucha activa, confidencialidad y señales de alerta. Un equipo del Departamento de Psicología y Salud Pública los supervisa.</p></details>
+    <details><summary>¿Y si me toca alguien que conozco?</summary><p>Puedes pedir alguien de otra facultad o elegir tú mismo a tu par. Si al conectarte ves que lo conoces, puedes pedir el cambio sin dar explicaciones.</p></details>
+    <details><summary>¿Qué pasa si necesito más que una conversación?</summary><p>Tu par te explica cómo llegar a la Clínica de Asistencia Psicológica de la UCA y te acompaña en ese paso, si tú quieres.</p></details>
+    <details><summary>¿Puedo cancelar?</summary><p>Sí, respondiendo al mensaje de confirmación. No hay penalización.</p></details>
+  </div>
+
+  <footer class="lp-foot"><div class="wrap">
+    <span><b>Urgencias:</b> línea 131 (Minsal) · Clínica de Asistencia Psicológica UCA <span class="todo">contacto por confirmar</span></span>
+    <span>Programa piloto · Escucha entre pares UCA, con supervisión del Departamento de Psicología y Salud Pública.</span>
+  </div></footer>
+</section>
+
+<!-- ================= CONFIRMACIÓN ================= -->
+<section class="view" id="v-ok">
+  <div class="flow">
+    <div class="ok">✓</div>
+    <h1>Listo, tu conversación está agendada</h1>
+    <p class="lead">Ya diste el paso más difícil.</p>
+    <div class="ticket"><dl id="ticket"></dl></div>
+    <p class="lead" id="ok-next"></p>
+    <p class="lead">Si antes de la cita te sientes en peligro, no esperes: llama a la <b>línea 131</b>.</p>
+    <button class="primary" onclick="show('v-encuesta')">Simular: encuesta después de la conversación →</button>
+    <p style="text-align:center"><button class="linkbtn" onclick="show('v-home')">Volver al inicio</button></p>
+  </div>
+</section>
+
+<!-- ================= ENCUESTA POST-CONVERSACIÓN ================= -->
+<section class="view" id="v-encuesta">
+  <div class="flow">
+    <h1>¿Cómo te fue?</h1>
+    <p class="lead">Son tres preguntas y nos ayudan a saber si esto sirve.</p>
+    <form id="f-enc">
+      <div class="field">
+        <label class="q">¿Qué tan útil te resultó la conversación? <small style="font-weight:400;color:var(--gris)">1 = nada útil · 5 = muy útil</small></label>
+        <div class="choices scale">
+          <label><input type="radio" name="valor" value="1" required>1</label>
+          <label><input type="radio" name="valor" value="2">2</label>
+          <label><input type="radio" name="valor" value="3">3</label>
+          <label><input type="radio" name="valor" value="4">4</label>
+          <label><input type="radio" name="valor" value="5">5</label>
+        </div>
+      </div>
+      <div class="field">
+        <label class="q">¿Te sentiste escuchado/a sin que te juzgaran?</label>
+        <div class="choices">
+          <label><input type="radio" name="escuchado" value="si" required>Sí</label>
+          <label><input type="radio" name="escuchado" value="parcial">En parte</label>
+          <label><input type="radio" name="escuchado" value="no">No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label class="q">¿Volverías a usarlo o se lo recomendarías a alguien?</label>
+        <div class="choices">
+          <label><input type="radio" name="volveria" value="si" required>Sí</label>
+          <label><input type="radio" name="volveria" value="talvez">Tal vez</label>
+          <label><input type="radio" name="volveria" value="no">No</label>
+        </div>
+      </div>
+      <button class="primary" type="submit">Enviar</button>
+    </form>
+  </div>
+</section>
+
+<!-- ================= PANEL DE FACILITADOR ================= -->
+<button class="fac-btn" onclick="document.getElementById('fac').classList.toggle('on')">Métricas de la sesión</button>
+<aside class="fac" id="fac" aria-label="Panel de facilitador">
+  <h4>Embudo (esta sesión de prueba)</h4>
+  <table>
+    <tr><td>Banner visto</td><td id="m-vista">0</td></tr>
+    <tr><td>Clic en banner</td><td id="m-clic">0</td></tr>
+    <tr><td>Llegó a la agenda</td><td id="m-agenda">0</td></tr>
+    <tr><td>Empezó a agendar</td><td id="m-inicio">0</td></tr>
+    <tr><td>Cita confirmada</td><td id="m-envio">0</td></tr>
+    <tr><td>Interés (clic / visto)</td><td id="m-int">–</td></tr>
+    <tr><td>Conversión (cita / clic)</td><td id="m-conv">–</td></tr>
+    <tr class="sep"><td colspan="2">Cómo agendan</td></tr>
+    <tr><td>Anónimas</td><td id="m-anon">0</td></tr>
+    <tr><td>Eligieron par</td><td id="m-elige">0</td></tr>
+    <tr><td>Pidieron otra facultad</td><td id="m-otra">0</td></tr>
+    <tr><td>Primer año</td><td id="m-primero">0</td></tr>
+  </table>
+  <h4>Registro</h4>
+  <div class="log" id="log"></div>
+  <div class="row"><button onclick="resetM()">Reiniciar</button><button onclick="show('v-home')">Ir al inicio</button></div>
+</aside>
+
+<script>
+  // ---------- Navegación ----------
+  function show(id){
+    document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id===id));
+    window.scrollTo(0,0);
+    if(id==='v-home') startAuto(); else clearInterval(timer);
+  }
+
+  // ---------- Métricas simuladas ----------
+  const M={vista:0,clic:0,agenda:0,inicio:0,envio:0,anon:0,elige:0,otra:0,primero:0};
+  function log(t){document.getElementById('log').insertAdjacentHTML('afterbegin',`<div>${new Date().toLocaleTimeString('es',{hour12:false})} · ${t}</div>`)}
+  function track(k,detail){
+    M[k]++;
+    document.getElementById('m-'+k).textContent=M[k];
+    document.getElementById('m-int').textContent=M.vista?Math.round(M.clic/M.vista*100)+'%':'–';
+    document.getElementById('m-conv').textContent=M.clic?Math.round(M.envio/M.clic*100)+'%':'–';
+    if(!['anon','elige','otra','primero'].includes(k)) log(k+(detail?' · '+detail:''));
+  }
+  function resetM(){
+    Object.keys(M).forEach(k=>{M[k]=0;document.getElementById('m-'+k).textContent=0});
+    document.getElementById('m-int').textContent='–';document.getElementById('m-conv').textContent='–';
+    document.getElementById('log').innerHTML='';
+  }
+
+  // ---------- Carrusel ----------
+  const slides=[...document.querySelectorAll('.slide')];
+  const PAR=slides.findIndex(s=>s.id==='banner-par');
+  const dots=document.getElementById('dots');
+  let cur=0,timer;
+  slides.forEach((_,i)=>{const b=document.createElement('button');b.setAttribute('aria-label','Banner '+(i+1));b.onclick=()=>{set(i);startAuto()};dots.appendChild(b)});
+  function set(i){
+    cur=(i+slides.length)%slides.length;
+    slides.forEach((s,j)=>s.classList.toggle('on',j===cur));
+    [...dots.children].forEach((d,j)=>d.classList.toggle('on',j===cur));
+    if(cur===PAR&&document.getElementById('v-home').classList.contains('on')) track('vista');
+  }
+  function go(d){set(cur+d);startAuto()}
+  function startAuto(){clearInterval(timer);timer=setInterval(()=>set(cur+1),5000)}
+  set(PAR); startAuto();
+
+  const banner=document.getElementById('banner-par');
+  function openLanding(){track('clic');show('v-landing')}
+  banner.addEventListener('click',openLanding);
+  banner.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openLanding()}});
+
+  // Llegó a la sección de agenda (una vez por visita a la landing)
+  let seenAgenda=false;
+  new IntersectionObserver(es=>{es.forEach(e=>{
+    if(e.isIntersecting&&!seenAgenda&&document.getElementById('v-landing').classList.contains('on')){seenAgenda=true;track('agenda')}
+  })},{threshold:.15}).observe(document.getElementById('agenda'));
+
+  // ---------- Pares de ejemplo ----------
+  // dias: 1=lunes … 5=viernes · v/p = virtual/presencial
+  const PEERS=[
+    {id:'andrea',nombre:'Andrea',anio:'4.º',carrera:'Psicología',fac:'FCSH',color:'#2f6f73',temas:['Adaptación a la U','Parciales'],
+      slots:{1:[['12:00','vp'],['12:30','vp']],3:[['12:00','vp'],['17:30','v']],5:[['10:00','p']]}},
+    {id:'diego',nombre:'Diego',anio:'3.º',carrera:'Ing. Industrial',fac:'FIA',color:'#3b5b9a',temas:['Carga académica','Presión familiar'],
+      slots:{2:[['17:30','v'],['18:00','v'],['18:30','v']],4:[['18:00','v'],['19:00','v']]}},
+    {id:'fernanda',nombre:'Fernanda',anio:'5.º',carrera:'Administración de Empresas',fac:'FCEE',color:'#8a5a2b',temas:['Trabajar y estudiar','Dinero'],
+      slots:{1:[['7:00','p']],2:[['12:00','p'],['12:30','p']],4:[['12:00','p']]}},
+    {id:'luis',nombre:'Luis',anio:'4.º',carrera:'Comunicación Social',fac:'FCSH',color:'#6b4c9a',temas:['Sentirse solo','Rupturas'],
+      slots:{3:[['18:00','v'],['18:30','v']],5:[['17:00','v'],['17:30','v']]}},
+    {id:'marcela',nombre:'Marcela',anio:'3.º',carrera:'Arquitectura',fac:'FIA',color:'#a0445b',temas:['Ansiedad en exámenes','Dormir mal'],
+      slots:{2:[['13:00','vp']],3:[['13:00','vp'],['13:30','vp']],5:[['12:00','vp']]}},
+  ];
+
+  const $=s=>document.querySelector(s);
+  const form=$('#f-book');
+  const S={peer:null,day:null,time:null,assigned:null};
+  const fmtDay=d=>d.toLocaleDateString('es',{weekday:'long',day:'numeric',month:'long'});
+
+  // Próximos 10 días hábiles
+  const DAYS=[];
+  for(let d=new Date(),n=0;n<10;){d.setDate(d.getDate()+1);if(d.getDay()>0&&d.getDay()<6){DAYS.push(new Date(d));n++}}
+
+  function val(name){return (form.querySelector(`[name=${name}]:checked`)||{}).value}
+  function eligiblePeers(){
+    const fac=$('#facultad').value, otra=$('#otraFac').checked, mod=val('modalidad');
+    return PEERS.filter(p=>{
+      if(otra&&['FIA','FCSH','FCEE'].includes(fac)&&p.fac===fac) return false;
+      if(mod==='virtual'&&!Object.values(p.slots).flat().some(s=>s[1].includes('v'))) return false;
+      if(mod==='presencial'&&!Object.values(p.slots).flat().some(s=>s[1].includes('p'))) return false;
+      return true;
+    });
+  }
+  function slotsFor(date){
+    const mod=val('modalidad'), dow=date.getDay();
+    const pool=val('modo')==='elegir'?(S.peer?eligiblePeers().filter(p=>p.id===S.peer):[]):eligiblePeers();
+    const map={};
+    pool.forEach(p=>(p.slots[dow]||[]).forEach(([t,m])=>{
+      if(mod==='virtual'&&!m.includes('v'))return;
+      if(mod==='presencial'&&!m.includes('p'))return;
+      (map[t]=map[t]||{t,m:'',peers:[]});
+      m.split('').forEach(c=>{if(!map[t].m.includes(c))map[t].m+=c});
+      map[t].peers.push(p);
+    }));
+    const toMin=t=>{const[h,m]=t.split(':');return +h*60+ +m};
+    return Object.values(map).sort((a,b)=>toMin(a.t)-toMin(b.t));
+  }
+
+  function renderPeers(){
+    const box=$('#peers'), elegir=val('modo')==='elegir';
+    box.hidden=!elegir;
+    if(!elegir){S.peer=null;return}
+    const list=eligiblePeers();
+    if(S.peer&&!list.some(p=>p.id===S.peer)) S.peer=null;
+    box.innerHTML=list.length?list.map(p=>{
+      const mods=new Set(Object.values(p.slots).flat().map(s=>s[1]).join('').split(''));
+      const modTxt=[mods.has('v')&&'Virtual',mods.has('p')&&'Presencial'].filter(Boolean).join(' y ');
+      return `<button type="button" class="peer${S.peer===p.id?' sel':''}" data-id="${p.id}" aria-pressed="${S.peer===p.id}">
+        <div class="top"><div class="av" style="background:${p.color}">${p.nombre[0]}</div>
+        <div><b>${p.nombre}</b><small>${p.anio} año · ${p.carrera}</small></div></div>
+        <small>Le han hablado mucho de:</small>
+        <div class="tags">${p.temas.map(t=>`<span>${t}</span>`).join('')}</div>
+        <span class="mod">${modTxt}</span></button>`}).join('')
+      :'<div class="empty">No hay pares que cumplan estos filtros. Prueba con “Me da igual” en la modalidad.</div>';
+    box.querySelectorAll('.peer').forEach(b=>b.onclick=()=>{S.peer=b.dataset.id;S.time=null;renderAll()});
+  }
+
+  function renderDays(){
+    const box=$('#days');
+    box.innerHTML=DAYS.map((d,i)=>{
+      const has=slotsFor(d).length>0;
+      return `<button type="button" class="day${S.day===i?' sel':''}" data-i="${i}" ${has?'':'disabled'}>
+        <small>${d.toLocaleDateString('es',{weekday:'short'})}</small><b>${d.getDate()}</b>
+        <small>${d.toLocaleDateString('es',{month:'short'})}</small></button>`}).join('');
+    if(S.day!==null&&!slotsFor(DAYS[S.day]).length){S.day=null;S.time=null}
+    box.querySelectorAll('.day').forEach(b=>b.onclick=()=>{S.day=+b.dataset.i;S.time=null;renderAll()});
+  }
+
+  function renderSlots(){
+    const box=$('#slots');
+    if(val('modo')==='elegir'&&!S.peer){box.innerHTML='<div class="empty" style="grid-column:1/-1">Primero elige a tu par.</div>';return}
+    if(S.day===null){box.innerHTML='<div class="empty" style="grid-column:1/-1">Elige un día para ver los horarios.</div>';return}
+    const list=slotsFor(DAYS[S.day]);
+    if(S.time&&!list.some(s=>s.t===S.time)) S.time=null;
+    box.innerHTML=list.map(s=>`<button type="button" class="slot${S.time===s.t?' sel':''}" data-t="${s.t}">${s.t}<small>${s.m.toUpperCase().split('').join(' · ')}</small></button>`).join('');
+    box.querySelectorAll('.slot').forEach(b=>b.onclick=()=>{S.time=b.dataset.t;renderAll()});
+  }
+
+  function renderSummary(){
+    const anon=$('#anon').checked;
+    const p=PEERS.find(x=>x.id===S.peer);
+    $('#s-who').textContent=p?`${p.nombre} · ${p.carrera}`:'Quien esté disponible';
+    $('#s-day').textContent=S.day!==null?fmtDay(DAYS[S.day]):'—';
+    $('#s-time').textContent=S.time?S.time+' · 20–30 min':'—';
+    const mod=val('modalidad');
+    $('#s-mod').textContent={virtual:'Virtual',presencial:'Presencial',ambas:'Te preguntamos al confirmar'}[mod];
+    $('#s-name').textContent=anon?($('#alias').value.trim()||'Anónimo'):($('#nombre').value.trim()||'—');
+    const missing=[];
+    if(!val('anio')||!$('#facultad').value) missing.push('año y facultad');
+    if(val('modo')==='elegir'&&!S.peer) missing.push('tu par');
+    if(!S.time) missing.push('día y hora');
+    if(!$('#contacto').value.trim()) missing.push('un contacto');
+    if(!$('#consent').checked) missing.push('aceptar las condiciones');
+    $('#confirmar').disabled=missing.length>0;
+    $('#s-missing').textContent=missing.length?'Falta: '+missing.join(', '):'Es gratis y puedes cancelar cuando quieras.';
+  }
+
+  function renderAll(){renderPeers();renderDays();renderSlots();renderSummary()}
+
+  let started=false;
+  form.addEventListener('input',()=>{if(!started){started=true;track('inicio')}renderAll()});
+  form.addEventListener('click',e=>{if(!started&&e.target.closest('button,label')){started=true;track('inicio')}});
+  $('#anon').addEventListener('change',e=>{
+    $('#nameField').hidden=e.target.checked;$('#aliasField').hidden=!e.target.checked;
+    if(e.target.checked) $('#nombre').value=''; else $('#alias').value='';
+    renderSummary();
+  });
+
+  form.addEventListener('submit',e=>{
+    e.preventDefault();
+    if($('#confirmar').disabled) return;
+    const slot=slotsFor(DAYS[S.day]).find(s=>s.t===S.time);
+    const peer=PEERS.find(p=>p.id===S.peer)||slot.peers[0];
+    const anon=$('#anon').checked, mod=val('modalidad');
+    const modFinal=mod==='ambas'?(slot.m.includes('v')?'Virtual (o presencial si lo prefieres)':'Presencial'):(mod==='virtual'?'Virtual':'Presencial');
+    $('#ticket').innerHTML=`
+      <dt>Con</dt><dd>${peer.nombre} · ${peer.anio} año, ${peer.carrera}</dd>
+      <dt>Cuándo</dt><dd>${fmtDay(DAYS[S.day])}, ${S.time}</dd>
+      <dt>Duración</dt><dd>20 a 30 minutos</dd>
+      <dt>Cómo</dt><dd>${modFinal}</dd>
+      <dt>A nombre de</dt><dd>${anon?($('#alias').value.trim()||'Anónimo'):$('#nombre').value.trim()||'—'}</dd>`;
+    $('#ok-next').textContent=`Te escribiremos a ${$('#contacto').value.trim()} para confirmar${modFinal.startsWith('Virtual')?' y enviarte el enlace':' y decirte el lugar'}. Si necesitas cancelar o cambiar, responde a ese mensaje.`;
+
+    track('envio',`año ${val('anio')} · ${val('modo')} · ${anon?'anónimo':'con nombre'}`);
+    if(anon) track('anon');
+    if(val('modo')==='elegir') track('elige');
+    if($('#otraFac').checked) track('otra');
+    if(val('anio')==='1.º') track('primero');
+
+    form.reset();Object.assign(S,{peer:null,day:null,time:null});started=false;seenAgenda=false;
+    $('#nameField').hidden=false;$('#aliasField').hidden=true;$('#otraFac').checked=true;
+    renderAll();
+    show('v-ok');
+  });
+
+  document.getElementById('f-enc').addEventListener('submit',e=>{
+    e.preventDefault();
+    const d=new FormData(e.target);
+    log(`encuesta · útil ${d.get('valor')} · escuchado ${d.get('escuchado')} · volvería ${d.get('volveria')}`);
+    e.target.reset();show('v-home');
+  });
+
+  renderAll();
+</script>
+</body>
+</html>
