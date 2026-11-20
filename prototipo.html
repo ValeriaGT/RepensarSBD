@@ -10,6 +10,7 @@
     --linea:#dfe3ea; --fondo:#f5f7fa; --blanco:#fff; --par:#2f6f73; --par-osc:#0f3436; --par-claro:#e6f2f1; --rojo:#b3261e;
   }
   *{box-sizing:border-box}
+  [hidden]{display:none!important}
   html{scroll-behavior:smooth}
   body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--tinta);background:var(--fondo);line-height:1.5}
   a{color:inherit}
@@ -181,6 +182,45 @@
   .lp-foot .wrap{max-width:1040px;margin:auto;padding:28px 16px;display:grid;gap:8px}
   .lp-foot b{color:#fff}
 
+  /* ---------- IA conecta / personas escuchan ---------- */
+  .ai-band{background:var(--par-osc);color:#e3efee}
+  .ai-band .sec{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .ai-band h2{color:#fff;grid-column:1/-1;margin-bottom:4px}
+  .ai-band .col{background:rgba(255,255,255,.07);border-radius:12px;padding:18px}
+  .ai-band .col b{display:block;color:#fff;font-size:18px;margin-bottom:6px}
+
+  /* ---------- Asistente ---------- */
+  .as-wrap{max-width:640px;margin:0 auto;padding:16px 16px 40px;min-height:calc(100vh - 90px);display:flex;flex-direction:column}
+  .as-head{display:flex;gap:10px;align-items:center;padding:8px 0 14px;border-bottom:1px solid var(--linea);margin-bottom:14px}
+  .as-head .av{background:var(--par)}
+  .as-head small{display:block;color:var(--gris)}
+  .thread{display:flex;flex-direction:column;gap:10px;flex:1}
+  .b-ai,.b-me{max-width:88%;padding:11px 14px;border-radius:16px;font-size:15px;animation:in .25s ease}
+  .b-ai{background:#fff;border:1px solid var(--linea);align-self:flex-start;border-bottom-left-radius:4px}
+  .b-me{background:var(--par);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+  @keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .quick{display:flex;flex-wrap:wrap;gap:8px;align-self:flex-end;justify-content:flex-end;max-width:95%}
+  .quick button{border:1.5px solid var(--par);background:#fff;color:var(--par-osc);border-radius:999px;padding:7px 14px;font-weight:600;font-size:14px}
+  .quick button.on{background:var(--par);color:#fff}
+  .quick .done{background:var(--par);color:#fff}
+  .compose{display:flex;gap:8px;margin-top:14px;position:sticky;bottom:0;background:var(--fondo);padding:10px 0}
+  .compose input{flex:1}
+  .compose button{background:var(--par);color:#fff;border:0;border-radius:8px;padding:0 16px;font-weight:700}
+  .typing{align-self:flex-start;color:var(--gris);font-size:13px;padding:4px 8px}
+  .card-in{background:#fff;border:1px solid var(--linea);border-radius:14px;padding:16px;align-self:stretch;animation:in .25s ease}
+  .card-in h4{margin:0 0 10px;font-size:16px;color:var(--par-osc)}
+  .card-in .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .match{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+  .match .av{width:52px;height:52px;font-size:20px}
+  .match b{display:block;font-size:17px}
+  .match small{color:var(--gris)}
+  .why{margin:0 0 12px;padding-left:18px;color:var(--gris);font-size:14px}
+  .alert{background:#fff4e5;border:1.5px solid #e8a33d;border-radius:14px;padding:16px;align-self:stretch;animation:in .25s ease}
+  .alert h4{margin:0 0 8px;color:#8a4b00}
+  .alert .call{display:block;text-align:center;background:var(--rojo);color:#fff;border-radius:10px;padding:12px;font-weight:700;text-decoration:none;margin:10px 0}
+  .alert .sec-btn{width:100%;border:1.5px solid var(--par);background:#fff;color:var(--par-osc);border-radius:10px;padding:11px;font-weight:700}
+  .ai-note{font-size:12px;color:var(--gris);text-align:center;margin-top:8px}
+
   /* ---------- Confirmación y encuesta ---------- */
   .flow{max-width:620px;margin:0 auto;padding:40px 16px 70px}
   .flow h1{font-size:28px;margin:0 0 10px;color:var(--par-osc)}
@@ -212,7 +252,7 @@
     .slides{aspect-ratio:4/5}
     .slide.par{flex-direction:column;align-items:flex-start;justify-content:center}
     .slide.par .art,.arrow{display:none}
-    .hero .sec,.booking,.isnot{grid-template-columns:1fr}
+    .hero .sec,.booking,.isnot,.ai-band .sec,.card-in .row2{grid-template-columns:1fr}
     .hero .chat{display:none}
     .summary{position:static}
     .who-mode{grid-template-columns:1fr}
@@ -270,7 +310,7 @@
 <section class="view" id="v-landing">
   <div class="lp-bar"><div class="wrap">
     <button class="back" onclick="show('v-home')">← UCA</button>
-    <a class="go" href="#agenda">Agendar</a>
+    <button class="go" onclick="openAssistant()">Empezar</button>
   </div></div>
   <div class="urgent"><div class="wrap">
     <b>¿Estás en peligro o piensas en hacerte daño?</b> No esperes una cita: llama ya a la <b>línea 131</b> (Minsal) o a la Clínica de Asistencia Psicológica UCA <span class="todo">contacto por confirmar</span>.
@@ -280,18 +320,18 @@
   <div class="hero"><div class="sec">
     <div>
       <span class="kicker">Escucha entre pares · UCA</span>
-      <h1>No tienes que resolverlo todo solo.</h1>
-      <p class="lead">Habla con otro estudiante de la UCA, formado para escuchar y con supervisión de psicólogos. Sin juicios, a tu ritmo y en un horario que encaje entre tus clases.</p>
+      <h1>Pedir ayuda puede ser tan fácil como hablar con un compañero.</h1>
+      <p class="lead">Responde tres preguntas, sin dar tu nombre, y te conectamos con un estudiante de otra facultad, formado para escuchar y supervisado por psicólogos. A la hora que te quede bien, incluso de noche.</p>
       <ul class="chips">
-        <li>Gratis</li><li>Puede ser anónimo</li><li>20 a 30 min</li><li>Virtual o presencial</li>
+        <li>Gratis</li><li>Sin dar tu nombre</li><li>20 a 30 min</li><li>Virtual o presencial</li>
       </ul>
-      <a class="btn" href="#agenda">Elegir día y hora</a><a class="btn ghost" href="#que-es">¿Qué es esto?</a>
+      <button class="btn" onclick="openAssistant()">Empezar · 3 preguntas</button><a class="btn ghost" href="#agenda">Prefiero elegir yo</a>
     </div>
     <div class="chat" aria-hidden="true">
       <div class="msg me">Siento que no doy con todo. Pero tampoco es para ir al psicólogo, creo…</div>
       <div class="msg par">Está bien no saberlo todavía. Cuéntame qué ha pasado esta semana.</div>
       <div class="msg me">Los parciales, y en la casa también…</div>
-      <small>Ejemplo de cómo empieza una conversación</small>
+      <small>Así empieza una conversación con tu par</small>
     </div>
   </div></div>
 
@@ -337,13 +377,20 @@
   <!-- Cómo funciona -->
   <div class="sec" style="padding-top:0">
     <h2>Cómo funciona</h2>
-    <p class="sub">Tres pasos, y en ninguno tienes que explicar por qué.</p>
+    <p class="sub">Tres pasos, y en ninguno tienes que dar tu nombre.</p>
     <ol class="steps">
-      <li><b>Eliges con quién y cuándo</b><span>Un par en particular o el primero disponible. Virtual o presencial.</span></li>
-      <li><b>Te confirmamos</b><span>Por el medio que tú elijas. Si es virtual, te llega el enlace.</span></li>
-      <li><b>Conversas 20 a 30 minutos</b><span>Al final decides si quieres volver, si quieres hablar con un profesional o si te basta con eso.</span></li>
+      <li><b>Respondes tres preguntas</b><span>Un asistente te ayuda a poner en palabras lo que sientes. Toma un minuto.</span></li>
+      <li><b>Te conectamos con tu par</b><span>Alguien de otra facultad, disponible en tu horario. Tú eliges si es virtual o presencial.</span></li>
+      <li><b>Conversas 20 a 30 minutos</b><span>Con una persona, no con la IA. Al final decides si quieres volver o hablar con un profesional.</span></li>
     </ol>
   </div>
+
+  <!-- IA conecta / personas escuchan -->
+  <div class="ai-band"><div class="sec">
+    <h2>La IA conecta. Las personas escuchan.</h2>
+    <div class="col"><b>Lo que hace el asistente</b>Te hace tres preguntas, te explica cómo funciona y te asigna un par disponible. Si nota señales de riesgo, te conecta de inmediato con la clínica y te muestra la línea 131.</div>
+    <div class="col"><b>Lo que hace tu par</b>Te escucha. Es un estudiante formado en escucha y supervisado por el Departamento de Psicología y Salud Pública. La IA no participa en la conversación.</div>
+  </div></div>
 
   <!-- Privacidad -->
   <div class="sec" style="padding-top:0">
@@ -359,8 +406,8 @@
 
   <!-- ================= AGENDA ================= -->
   <div class="agenda-wrap" id="agenda"><div class="sec">
-    <h2>Agenda tu conversación</h2>
-    <p class="sub">Toma un minuto. Puedes cancelar o cambiarla cuando quieras.</p>
+    <h2>Prefiero elegir yo</h2>
+    <p class="sub">Si no quieres usar el asistente, elige aquí a tu par, el día y la hora. <button type="button" class="linkbtn" onclick="openAssistant()">O responde las 3 preguntas →</button></p>
 
     <div class="booking">
       <form id="f-book" novalidate>
@@ -474,6 +521,25 @@
   </div></footer>
 </section>
 
+<!-- ================= ASISTENTE ================= -->
+<section class="view" id="v-asistente">
+  <div class="lp-bar"><div class="wrap">
+    <button class="back" onclick="show('v-landing')">← Habla con un par</button>
+    <a class="go" href="tel:131" style="background:var(--rojo)">Urgencia · 131</a>
+  </div></div>
+  <div class="as-wrap">
+    <div class="as-head">
+      <div class="av">✦</div>
+      <div><b>Asistente de Habla con un par</b><small>Automático, no es una persona · Simulado en este prototipo</small></div>
+    </div>
+    <div class="thread" id="thread" aria-live="polite"></div>
+    <form class="compose" id="compose" hidden>
+      <input type="text" id="free" placeholder="Escribe con tus palabras (opcional)" autocomplete="off">
+      <button type="submit">Enviar</button>
+    </form>
+  </div>
+</section>
+
 <!-- ================= CONFIRMACIÓN ================= -->
 <section class="view" id="v-ok">
   <div class="flow">
@@ -532,12 +598,19 @@
   <table>
     <tr><td>Banner visto</td><td id="m-vista">0</td></tr>
     <tr><td>Clic en banner</td><td id="m-clic">0</td></tr>
-    <tr><td>Llegó a la agenda</td><td id="m-agenda">0</td></tr>
-    <tr><td>Empezó a agendar</td><td id="m-inicio">0</td></tr>
+    <tr><td>Abrió el asistente</td><td id="m-asistente">0</td></tr>
+    <tr><td>Respondió las 3 preguntas</td><td id="m-preguntas">0</td></tr>
+    <tr><td>Llegó a "elegir yo"</td><td id="m-agenda">0</td></tr>
+    <tr><td>Empezó a agendar (manual)</td><td id="m-inicio">0</td></tr>
     <tr><td>Cita confirmada</td><td id="m-envio">0</td></tr>
     <tr><td>Interés (clic / visto)</td><td id="m-int">–</td></tr>
     <tr><td>Conversión (cita / clic)</td><td id="m-conv">–</td></tr>
+    <tr class="sep"><td colspan="2">Seguridad</td></tr>
+    <tr><td>Señal de riesgo detectada</td><td id="m-riesgo">0</td></tr>
+    <tr><td>Pidió contacto de la clínica</td><td id="m-derivacion">0</td></tr>
     <tr class="sep"><td colspan="2">Cómo agendan</td></tr>
+    <tr><td>Con el asistente</td><td id="m-viaIA">0</td></tr>
+    <tr><td>Aceptó el primer par sugerido</td><td id="m-acepta">0</td></tr>
     <tr><td>Anónimas</td><td id="m-anon">0</td></tr>
     <tr><td>Eligieron par</td><td id="m-elige">0</td></tr>
     <tr><td>Pidieron otra facultad</td><td id="m-otra">0</td></tr>
@@ -553,18 +626,19 @@
   function show(id){
     document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id===id));
     window.scrollTo(0,0);
-    if(id==='v-home') startAuto(); else clearInterval(timer);
+    if(id==='v-home'){set(PAR);startAuto()} else clearInterval(timer);
   }
 
   // ---------- Métricas simuladas ----------
-  const M={vista:0,clic:0,agenda:0,inicio:0,envio:0,anon:0,elige:0,otra:0,primero:0};
+  const M={vista:0,clic:0,asistente:0,preguntas:0,agenda:0,inicio:0,envio:0,riesgo:0,derivacion:0,viaIA:0,acepta:0,anon:0,elige:0,otra:0,primero:0};
+  const SUB=['anon','elige','otra','primero','viaIA','acepta'];
   function log(t){document.getElementById('log').insertAdjacentHTML('afterbegin',`<div>${new Date().toLocaleTimeString('es',{hour12:false})} · ${t}</div>`)}
   function track(k,detail){
     M[k]++;
     document.getElementById('m-'+k).textContent=M[k];
     document.getElementById('m-int').textContent=M.vista?Math.round(M.clic/M.vista*100)+'%':'–';
     document.getElementById('m-conv').textContent=M.clic?Math.round(M.envio/M.clic*100)+'%':'–';
-    if(!['anon','elige','otra','primero'].includes(k)) log(k+(detail?' · '+detail:''));
+    if(!SUB.includes(k)) log(k+(detail?' · '+detail:''));
   }
   function resetM(){
     Object.keys(M).forEach(k=>{M[k]=0;document.getElementById('m-'+k).textContent=0});
@@ -601,16 +675,25 @@
 
   // ---------- Pares de ejemplo ----------
   // dias: 1=lunes … 5=viernes · v/p = virtual/presencial
+  // claves = opciones de la pregunta 1 del asistente con las que cada par tiene más experiencia
   const PEERS=[
-    {id:'andrea',nombre:'Andrea',anio:'4.º',carrera:'Psicología',fac:'FCSH',color:'#2f6f73',temas:['Adaptación a la U','Parciales'],
+    {id:'daniel',nombre:'Daniel',anio:'4.º',carrera:'Economía',fac:'FCEE',color:'#3a7d44',temas:['Parciales','Pensar en dejar la carrera'],
+      claves:['Parciales y carga académica','Pensar en dejar la carrera'],
+      slots:{1:[['12:30','vp'],['19:00','v']],2:[['19:00','v'],['19:30','v']],3:[['12:30','vp']],4:[['19:00','v'],['19:30','v']]}},
+    {id:'sofia',nombre:'Sofía',anio:'4.º',carrera:'Psicología',fac:'FCSH',color:'#2f6f73',temas:['Adaptación a la U','Parciales'],
+      claves:['Parciales y carga académica','Sentirme solo/a','No sé ponerlo en palabras'],
       slots:{1:[['12:00','vp'],['12:30','vp']],3:[['12:00','vp'],['17:30','v']],5:[['10:00','p']]}},
     {id:'diego',nombre:'Diego',anio:'3.º',carrera:'Ing. Industrial',fac:'FIA',color:'#3b5b9a',temas:['Carga académica','Presión familiar'],
+      claves:['Parciales y carga académica','Familia'],
       slots:{2:[['17:30','v'],['18:00','v'],['18:30','v']],4:[['18:00','v'],['19:00','v']]}},
     {id:'fernanda',nombre:'Fernanda',anio:'5.º',carrera:'Administración de Empresas',fac:'FCEE',color:'#8a5a2b',temas:['Trabajar y estudiar','Dinero'],
+      claves:['Dinero','Pensar en dejar la carrera'],
       slots:{1:[['7:00','p']],2:[['12:00','p'],['12:30','p']],4:[['12:00','p']]}},
     {id:'luis',nombre:'Luis',anio:'4.º',carrera:'Comunicación Social',fac:'FCSH',color:'#6b4c9a',temas:['Sentirse solo','Rupturas'],
+      claves:['Sentirme solo/a','Una relación'],
       slots:{3:[['18:00','v'],['18:30','v']],5:[['17:00','v'],['17:30','v']]}},
     {id:'marcela',nombre:'Marcela',anio:'3.º',carrera:'Arquitectura',fac:'FIA',color:'#a0445b',temas:['Ansiedad en exámenes','Dormir mal'],
+      claves:['Parciales y carga académica','No sé ponerlo en palabras'],
       slots:{2:[['13:00','vp']],3:[['13:00','vp'],['13:30','vp']],5:[['12:00','vp']]}},
   ];
 
@@ -725,24 +808,212 @@
     const peer=PEERS.find(p=>p.id===S.peer)||slot.peers[0];
     const anon=$('#anon').checked, mod=val('modalidad');
     const modFinal=mod==='ambas'?(slot.m.includes('v')?'Virtual (o presencial si lo prefieres)':'Presencial'):(mod==='virtual'?'Virtual':'Presencial');
-    $('#ticket').innerHTML=`
-      <dt>Con</dt><dd>${peer.nombre} · ${peer.anio} año, ${peer.carrera}</dd>
-      <dt>Cuándo</dt><dd>${fmtDay(DAYS[S.day])}, ${S.time}</dd>
-      <dt>Duración</dt><dd>20 a 30 minutos</dd>
-      <dt>Cómo</dt><dd>${modFinal}</dd>
-      <dt>A nombre de</dt><dd>${anon?($('#alias').value.trim()||'Anónimo'):$('#nombre').value.trim()||'—'}</dd>`;
-    $('#ok-next').textContent=`Te escribiremos a ${$('#contacto').value.trim()} para confirmar${modFinal.startsWith('Virtual')?' y enviarte el enlace':' y decirte el lugar'}. Si necesitas cancelar o cambiar, responde a ese mensaje.`;
-
-    track('envio',`año ${val('anio')} · ${val('modo')} · ${anon?'anónimo':'con nombre'}`);
-    if(anon) track('anon');
+    finishBooking({peer,date:DAYS[S.day],time:S.time,mod:modFinal,
+      name:anon?($('#alias').value.trim()||'Anónimo'):$('#nombre').value.trim()||'—',
+      contacto:$('#contacto').value.trim(),anio:val('anio'),anon,via:val('modo'),otra:$('#otraFac').checked});
     if(val('modo')==='elegir') track('elige');
-    if($('#otraFac').checked) track('otra');
-    if(val('anio')==='1.º') track('primero');
 
     form.reset();Object.assign(S,{peer:null,day:null,time:null});started=false;seenAgenda=false;
     $('#nameField').hidden=false;$('#aliasField').hidden=true;$('#otraFac').checked=true;
     renderAll();
+  });
+
+  // Confirmación común a los dos caminos (asistente y "elegir yo")
+  function finishBooking(b){
+    $('#ticket').innerHTML=`
+      <dt>Con</dt><dd>${b.peer.nombre} · ${b.peer.anio} año, ${b.peer.carrera}</dd>
+      <dt>Cuándo</dt><dd>${fmtDay(b.date)}, ${b.time}</dd>
+      <dt>Duración</dt><dd>20 a 30 minutos</dd>
+      <dt>Cómo</dt><dd>${b.mod}</dd>
+      <dt>A nombre de</dt><dd>${esc(b.name)}</dd>`;
+    $('#ok-next').textContent=`${b.peer.nombre} te escribirá a ${b.contacto} para confirmar${b.mod.startsWith('Virtual')?' y enviarte el enlace':' y decirte el lugar'}. Si necesitas cancelar o cambiar, responde a ese mensaje.`;
+    track('envio',`año ${b.anio} · ${b.via} · ${b.anon?'anónimo':'con nombre'} · ${b.peer.nombre}`);
+    if(b.anon) track('anon');
+    if(b.otra) track('otra');
+    if(b.anio==='1.º') track('primero');
     show('v-ok');
+  }
+  function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+  // ---------- Asistente (simulado: reglas fijas, no un modelo de IA real) ----------
+  const RISK=/suicid|matarme|me quiero morir|quiero morir|no quiero vivir|no seguir viviendo|hacerme da[ñn]o|quitarme la vida|cortarme|desaparecer para siempre/i;
+  const th=$('#thread'), compose=$('#compose');
+  const wait=ms=>new Promise(r=>setTimeout(r,ms));
+  let flow=0, AS={};
+
+  function bubble(html,cls){const d=document.createElement('div');d.className=cls;d.innerHTML=html;th.appendChild(d);d.scrollIntoView({block:'end',behavior:'smooth'});return d}
+  async function ai(html){const t=bubble('escribiendo…','typing');await wait(600);t.remove();return bubble(html,'b-ai')}
+  const me=t=>bubble(esc(t),'b-me');
+  function quick(opts,multi){
+    return new Promise(res=>{
+      const box=document.createElement('div');box.className='quick';
+      const sel=new Set();let done;
+      opts.forEach(o=>{const b=document.createElement('button');b.type='button';b.textContent=o;
+        b.onclick=()=>{
+          if(multi){b.classList.toggle('on');sel.has(o)?sel.delete(o):sel.add(o);done.disabled=!sel.size}
+          else{box.remove();me(o);res(o)}
+        };box.appendChild(b)});
+      if(multi){done=document.createElement('button');done.type='button';done.className='done';done.textContent='Listo →';done.disabled=true;
+        done.onclick=()=>{box.remove();const a=[...sel];me(a.join(' · '));res(a)};box.appendChild(done)}
+      th.appendChild(box);box.scrollIntoView({block:'end',behavior:'smooth'});
+    });
+  }
+  const franja=t=>{const h=+t.split(':')[0];return h<12?'Mañana':h<14?'Almuerzo':'Tarde y noche'};
+
+  async function openAssistant(){
+    show('v-asistente');track('asistente');
+    const my=++flow;
+    AS={temas:[],texto:''};th.innerHTML='';compose.hidden=false;
+    await ai('Hola. Soy el asistente de <b>Habla con un par</b>. No soy una persona ni doy consejos de salud: te ayudo a encontrar a un estudiante que te escuche.');
+    await ai('<b>No necesitas darme tu nombre.</b> Son tres preguntas cortas. Toca una opción o escribe con tus palabras.');
+    if(my!==flow) return;
+    await ai('<b>1 de 3 ·</b> ¿Qué es lo que más te está pesando? Puedes elegir varias.');
+    AS.temas=await quick(['Parciales y carga académica','Pensar en dejar la carrera','Familia','Dinero','Una relación','Sentirme solo/a','No sé ponerlo en palabras'],true);
+    if(my!==flow) return;
+    await ai(AS.temas.includes('Pensar en dejar la carrera')
+      ?'Gracias por contármelo. En primer año, pensar en dejar la carrera es más común de lo que parece, y hablarlo ayuda a ver opciones antes de decidir.'
+      :AS.temas.includes('No sé ponerlo en palabras')?'Está bien no tenerlo claro todavía. Para eso sirve conversar.'
+      :'Entiendo. Es mucho para cargarlo solo/a.');
+    await ai('<b>2 de 3 ·</b> ¿Cuánto te está afectando en tu día a día?');
+    AS.nivel=await quick(['Un poco','Bastante: me cuesta dormir o concentrarme','Mucho: siento que no puedo']);
+    if(my!==flow) return;
+    if(AS.nivel.startsWith('Mucho')){
+      await ai('Gracias por decírmelo. Te hago una pregunta directa, porque es importante: <b>¿en estos días has pensado en hacerte daño o en no seguir viviendo?</b>');
+      const r=await quick(['Sí','No','Prefiero no responder']);
+      if(my!==flow) return;
+      if(r==='Sí') return riskFlow();
+      if(r==='Prefiero no responder') await ai('Está bien. Si en algún momento sientes que estás en peligro, llama a la <b>línea 131</b>. Tienes el botón arriba en esta pantalla.');
+    }
+    await ai('<b>3 de 3 ·</b> ¿Qué te ayudaría más ahora?');
+    AS.ayuda=await quick(['Desahogarme','Ordenar mis ideas','Saber si necesito un profesional','No sé todavía']);
+    if(my!==flow) return;
+    track('preguntas',AS.temas.join(', ')+' · '+AS.nivel.split(':')[0]);
+    await ai('Listo. Así funciona: hablas 20 a 30 minutos con un estudiante de años superiores, <b>formado en escucha y supervisado por psicólogos</b>. La conversación es con una persona: yo no participo.');
+    await ai('Para buscarte a alguien de <b>otra facultad</b> y en tu horario necesito tres datos más. No sirven para identificarte.');
+    if(my!==flow) return;
+    compose.hidden=true;
+    logistics(my);
+  }
+
+  function logistics(my){
+    const c=bubble(`<h4>Para encontrar a tu par</h4>
+      <div class="row2">
+        <div><label class="q">Año</label><select data-k="anio"><option value="">Elige</option><option>1.º</option><option>2.º</option><option>3.º</option><option>4.º</option><option>5.º+</option></select></div>
+        <div><label class="q">Facultad</label><select data-k="fac"><option value="">Elige</option><option value="FIA">Ingeniería y Arquitectura</option><option value="FCSH">Ciencias Sociales y Humanidades</option><option value="FCEE">Ciencias Económicas y Empresariales</option><option value="nd">Otra / prefiero no decir</option></select></div>
+      </div>
+      <label class="q">¿Cuándo te queda mejor?</label>
+      <div class="choices">${['Mañana','Almuerzo','Tarde y noche'].map(f=>`<label><input type="radio" name="franja" value="${f}">${f}</label>`).join('')}</div>
+      <button class="primary" style="margin-top:14px" disabled>Buscar a mi par</button>`,'card-in');
+    const btn=c.querySelector('button'), get=k=>c.querySelector(`[data-k=${k}]`).value, fr=()=>(c.querySelector('[name=franja]:checked')||{}).value;
+    c.addEventListener('change',()=>btn.disabled=!(get('anio')&&get('fac')&&fr()));
+    btn.onclick=async()=>{
+      Object.assign(AS,{anio:get('anio'),fac:get('fac'),franja:fr()});
+      c.querySelectorAll('select,input,button').forEach(x=>x.disabled=true);
+      me(`${AS.anio} año · ${c.querySelector('[data-k=fac]').selectedOptions[0].text} · ${AS.franja}`);
+      AS.cands=rankPeers();AS.idx=0;
+      if(!AS.cands.length){await ai('No encontré a nadie disponible con esos filtros. Puedes <button class="linkbtn" onclick="show(\'v-landing\');location.hash=\'agenda\'">elegir tú en el calendario</button>.');return}
+      await ai('Buscando a alguien de otra facultad, disponible en tu horario…');
+      if(my!==flow) return;
+      showMatch(my);
+    };
+  }
+
+  function nextSlots(p,fr){
+    const out=[];
+    DAYS.forEach(d=>(p.slots[d.getDay()]||[]).forEach(([t,m])=>{if(!fr||franja(t)===fr)out.push({d,t,m})}));
+    return out;
+  }
+  function rankPeers(){
+    return PEERS
+      .filter(p=>!['FIA','FCSH','FCEE'].includes(AS.fac)||p.fac!==AS.fac)
+      .map(p=>({p,score:p.claves.filter(k=>AS.temas.includes(k)).length*2+(nextSlots(p,AS.franja).length?3:0)}))
+      .sort((a,b)=>b.score-a.score).map(x=>x.p);
+  }
+
+  async function showMatch(my){
+    const p=AS.cands[AS.idx];
+    let slots=nextSlots(p,AS.franja); const enFranja=slots.length>0;
+    if(!enFranja) slots=nextSlots(p);
+    const comun=p.claves.filter(k=>AS.temas.includes(k));
+    await ai(AS.idx===0?`Te sugiero a <b>${p.nombre}</b>.`:`Otra opción: <b>${p.nombre}</b>.`);
+    if(my!==flow) return;
+    const mods=[...new Set(slots.map(s=>s.m).join('').split(''))];
+    const c=bubble(`
+      <div class="match"><div class="av" style="background:${p.color}">${p.nombre[0]}</div>
+        <div><b>${p.nombre}</b><small>${p.anio} año · ${p.carrera}</small></div></div>
+      <ul class="why">
+        <li>Es de otra facultad que la tuya</li>
+        ${comun.length?`<li>Ha acompañado a otros estudiantes con: ${comun.join(', ').toLowerCase()}</li>`:''}
+        <li>${enFranja?'Tiene espacio en tu horario ('+AS.franja.toLowerCase()+')':'No tiene espacio en tu horario; estos son sus próximos'}</li>
+      </ul>
+      <label class="q">¿Cómo prefieres hablar?</label>
+      <div class="choices" data-k="mod">${[['v','Virtual'],['p','Presencial']].filter(([k])=>mods.includes(k)).map(([k,l],i)=>`<label><input type="radio" name="mod${AS.idx}" value="${k}" ${i===0?'checked':''}>${l}</label>`).join('')}</div>
+      <label class="q">Elige un horario</label>
+      <div class="slots" data-k="slots"></div>
+      <label class="q">¿Dónde te confirmamos? <small style="font-weight:400;color:var(--gris)">Correo o WhatsApp</small></label>
+      <input type="text" data-k="contacto">
+      <label class="q">Alias <small style="font-weight:400;color:var(--gris)">(opcional, no hace falta tu nombre)</small></label>
+      <input type="text" data-k="alias" placeholder="Ej. Luna">
+      <label class="switch" style="margin-top:12px"><input type="checkbox" data-k="consent">
+        <span>Entiendo que es una conversación de apoyo entre pares, no una consulta psicológica, y que si mi vida está en riesgo se buscará atención profesional.</span></label>
+      <button class="primary" data-k="ok" style="margin-top:14px" disabled>Confirmar con ${p.nombre}</button>
+      <div style="display:flex;justify-content:space-between;flex-wrap:wrap;margin-top:6px">
+        <button type="button" class="linkbtn" data-k="otro">Ver otro par</button>
+        <button type="button" class="linkbtn" data-k="manual">Prefiero elegir yo</button>
+      </div>`,'card-in');
+    const q=k=>c.querySelector(`[data-k=${k}]`);
+    let pick=null;
+    const modSel=()=>(c.querySelector(`[name=mod${AS.idx}]:checked`)||{}).value;
+    function drawSlots(){
+      const list=slots.filter(s=>s.m.includes(modSel())).slice(0,6);
+      if(pick&&!list.includes(pick)) pick=null;
+      q('slots').innerHTML=list.map((s,i)=>`<button type="button" class="slot${s===pick?' sel':''}" data-i="${i}">${s.t}<small>${s.d.toLocaleDateString('es',{weekday:'short',day:'numeric'})}</small></button>`).join('');
+      q('slots').querySelectorAll('.slot').forEach(b=>b.onclick=()=>{pick=list[+b.dataset.i];drawSlots();check()});
+    }
+    const check=()=>q('ok').disabled=!(pick&&q('contacto').value.trim()&&q('consent').checked);
+    q('mod').addEventListener('change',()=>{drawSlots();check()});
+    c.addEventListener('input',check);
+    drawSlots();
+    q('otro').onclick=()=>{c.remove();AS.idx=(AS.idx+1)%AS.cands.length;showMatch(flow)};
+    q('manual').onclick=()=>{show('v-landing');document.getElementById('agenda').scrollIntoView()};
+    q('ok').onclick=()=>{
+      track('viaIA');if(AS.idx===0) track('acepta');
+      const alias=q('alias').value.trim();
+      finishBooking({peer:p,date:pick.d,time:pick.t,mod:modSel()==='v'?'Virtual':'Presencial',name:alias||'Anónimo',
+        contacto:q('contacto').value.trim(),anio:AS.anio,anon:true,via:'asistente',otra:['FIA','FCSH','FCEE'].includes(AS.fac)});
+    };
+  }
+
+  async function riskFlow(){
+    const my=++flow;
+    track('riesgo');compose.hidden=true;
+    th.querySelectorAll('.quick').forEach(x=>x.remove());
+    await ai('Gracias por confiar en mí y decírmelo. Lo que sientes importa.');
+    if(my!==flow) return;
+    const a=bubble(`<h4>Esto merece atención hoy, no en una cita.</h4>
+      <p style="margin:0">Hay personas preparadas para ayudarte ahora mismo. No estás solo/a.</p>
+      <a class="call" href="tel:131">Llamar a la línea 131 (Minsal)</a>
+      <p style="font-size:14px;margin:0 0 10px">Clínica de Asistencia Psicológica UCA: <span class="todo">contacto por confirmar</span></p>
+      <button type="button" class="sec-btn">Quiero que alguien de la clínica me contacte</button>
+      <div data-k="der" hidden style="margin-top:10px">
+        <label class="q">¿Dónde te contactan? <small style="font-weight:400;color:var(--gris)">Correo o WhatsApp</small></label>
+        <input type="text"><button type="button" class="primary" style="margin-top:10px">Enviar a la clínica</button>
+      </div>`,'alert');
+    a.querySelector('.sec-btn').onclick=e=>{e.target.hidden=true;a.querySelector('[data-k=der]').hidden=false};
+    a.querySelector('[data-k=der] .primary').onclick=async()=>{
+      const v=a.querySelector('[data-k=der] input').value.trim(); if(!v) return;
+      a.querySelector('[data-k=der]').hidden=true;
+      track('derivacion');
+      await ai(`Listo. La clínica te va a contactar a ${esc(v)} <span class="todo">tiempo de respuesta por confirmar</span>. Si mientras tanto sientes que estás en peligro, llama ya al <b>131</b>.`);
+    };
+  }
+
+  compose.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const t=$('#free').value.trim(); if(!t) return;
+    $('#free').value='';me(t);AS.texto+=t+' ';
+    if(RISK.test(t)) return riskFlow();
+    await ai('Gracias por contármelo con tus palabras. Solo se lo pasamos a tu par si tú quieres. Cuando estés listo/a, elige una de las opciones.');
   });
 
   document.getElementById('f-enc').addEventListener('submit',e=>{
