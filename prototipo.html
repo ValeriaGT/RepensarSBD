@@ -206,6 +206,24 @@
   .join form{background:#fff;border-radius:12px;padding:16px}
   .join form .primary{margin-top:12px}
 
+  /* ---------- Equipo ---------- */
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+  .tabs button{border:1.5px solid var(--linea);background:#fff;border-radius:999px;padding:7px 16px;font-weight:600;font-size:14px;color:var(--tinta)}
+  .tabs button.on{background:var(--par-osc);border-color:var(--par-osc);color:#fff}
+  .team{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+  .tm{background:#fff;border:1px solid var(--linea);border-radius:14px;padding:20px 16px;text-align:center;display:flex;flex-direction:column;align-items:center}
+  .tm .photo{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:30px;font-weight:700;margin-bottom:10px}
+  .tm b{font-size:17px}
+  .tm .role{display:inline-block;border:1px solid var(--linea);border-radius:999px;padding:2px 10px;font-size:12px;font-weight:600;margin:6px 0 8px}
+  .tm .bio{color:var(--gris);font-size:14px;font-style:italic;margin:0 0 10px}
+  .tm .tags{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-bottom:8px}
+  .tm .tags span{font-size:12px;background:var(--fondo);border-radius:999px;padding:2px 8px}
+  .tm .meta{font-size:13px;color:var(--gris);margin-bottom:12px}
+  .tm .avail{margin:0 0 12px}
+  .tm .book{margin-top:auto;width:100%;background:var(--par);color:#fff;border:0;border-radius:10px;padding:11px;font-weight:700}
+  .tm .book:disabled{background:#c9cfda;cursor:not-allowed}
+  .tm.pro .book:not(:disabled){background:#3b5b9a}
+
   /* ---------- Asistente ---------- */
   .as-wrap{max-width:640px;margin:0 auto;padding:16px 16px 40px;min-height:calc(100vh - 90px);display:flex;flex-direction:column}
   .as-head{display:flex;gap:10px;align-items:center;padding:8px 0 14px;border-bottom:1px solid var(--linea);margin-bottom:14px}
@@ -460,6 +478,18 @@
     </div>
   </div>
 
+  <!-- Equipo -->
+  <div class="sec" id="equipo" style="padding-top:0">
+    <h2>Conoce a quienes te acompañan</h2>
+    <p class="sub">Antes de agendar, mira quiénes son. Todos los pares están formados en escucha, y un equipo de psicólogos los supervisa y recibe a quienes necesitan atención profesional.</p>
+    <div class="tabs" role="tablist">
+      <button class="on" data-f="todos">Todos</button>
+      <button data-f="par">Pares de escucha</button>
+      <button data-f="pro">Psicólogos</button>
+    </div>
+    <div class="team" id="team"></div>
+  </div>
+
   <!-- ================= AGENDA ================= -->
   <div class="agenda-wrap" id="agenda"><div class="sec">
     <h2>Prefiero elegir yo</h2>
@@ -693,6 +723,7 @@
     <tr class="sep"><td colspan="2">Cómo agendan</td></tr>
     <tr><td>Con el asistente</td><td id="m-viaIA">0</td></tr>
     <tr><td>Aceptó el primer par sugerido</td><td id="m-acepta">0</td></tr>
+    <tr><td>Agendó desde un perfil</td><td id="m-desdePerfil">0</td></tr>
     <tr><td>Anónimas</td><td id="m-anon">0</td></tr>
     <tr><td>Eligieron par</td><td id="m-elige">0</td></tr>
     <tr><td>Pidieron otra facultad</td><td id="m-otra">0</td></tr>
@@ -714,8 +745,8 @@
   }
 
   // ---------- Métricas simuladas ----------
-  const M={vista:0,clic:0,asistente:0,preguntas:0,agenda:0,inicio:0,envio:0,riesgo:0,derivacion:0,viaIA:0,acepta:0,anon:0,elige:0,otra:0,primero:0,quierePar:0};
-  const SUB=['anon','elige','otra','primero','viaIA','acepta'];
+  const M={vista:0,clic:0,asistente:0,preguntas:0,agenda:0,inicio:0,envio:0,riesgo:0,derivacion:0,viaIA:0,acepta:0,anon:0,elige:0,otra:0,primero:0,quierePar:0,desdePerfil:0};
+  const SUB=['anon','elige','otra','primero','viaIA','acepta','desdePerfil'];
   function log(t){document.getElementById('log').insertAdjacentHTML('afterbegin',`<div>${new Date().toLocaleTimeString('es',{hour12:false})} · ${t}</div>`)}
   function track(k,detail){
     M[k]++;
@@ -761,22 +792,22 @@
   // dias: 1=lunes … 5=viernes · v/p = virtual/presencial
   // claves = opciones de la pregunta 1 del asistente con las que cada par tiene más experiencia
   const PEERS=[
-    {id:'daniel',nombre:'Daniel',anio:'4.º',carrera:'Economía',fac:'FCEE',color:'#3a7d44',temas:['Parciales','Pensar en dejar la carrera'],
+    {id:'daniel',bio:'En primer año pensé en dejar la carrera. Hablarlo con alguien me ayudó a quedarme.',nombre:'Daniel',anio:'4.º',carrera:'Economía',fac:'FCEE',color:'#3a7d44',temas:['Parciales','Pensar en dejar la carrera'],
       claves:['Parciales y carga académica','Pensar en dejar la carrera'],
       slots:{1:[['12:30','vp'],['19:00','v']],2:[['19:00','v'],['19:30','v']],3:[['12:30','vp']],4:[['19:00','v'],['19:30','v']]}},
-    {id:'sofia',nombre:'Sofía',anio:'4.º',carrera:'Psicología',fac:'FCSH',color:'#2f6f73',temas:['Adaptación a la U','Parciales'],
+    {id:'sofia',bio:'Me gusta escuchar sin apurar a nadie. Aquí no hay respuestas correctas.',nombre:'Sofía',anio:'4.º',carrera:'Psicología',fac:'FCSH',color:'#2f6f73',temas:['Adaptación a la U','Parciales'],
       claves:['Parciales y carga académica','Sentirme solo/a','No sé ponerlo en palabras'],
       slots:{1:[['12:00','vp'],['12:30','vp']],3:[['12:00','vp'],['17:30','v']],5:[['10:00','p']]}},
-    {id:'diego',nombre:'Diego',anio:'3.º',carrera:'Ing. Industrial',fac:'FIA',color:'#3b5b9a',temas:['Carga académica','Presión familiar'],
+    {id:'diego',bio:'Sé lo que es estudiar con la presión de la casa encima.',nombre:'Diego',anio:'3.º',carrera:'Ing. Industrial',fac:'FIA',color:'#3b5b9a',temas:['Carga académica','Presión familiar'],
       claves:['Parciales y carga académica','Familia'],
       slots:{2:[['17:30','v'],['18:00','v'],['18:30','v']],4:[['18:00','v'],['19:00','v']]}},
-    {id:'fernanda',nombre:'Fernanda',anio:'5.º',carrera:'Administración de Empresas',fac:'FCEE',color:'#8a5a2b',temas:['Trabajar y estudiar','Dinero'],
+    {id:'fernanda',bio:'Trabajo y estudio. Si te cuesta que todo cuadre, te entiendo.',nombre:'Fernanda',anio:'5.º',carrera:'Administración de Empresas',fac:'FCEE',color:'#8a5a2b',temas:['Trabajar y estudiar','Dinero'],
       claves:['Dinero','Pensar en dejar la carrera'],
       slots:{1:[['7:00','p']],2:[['12:00','p'],['12:30','p']],4:[['12:00','p']]}},
-    {id:'luis',nombre:'Luis',anio:'4.º',carrera:'Comunicación Social',fac:'FCSH',color:'#6b4c9a',temas:['Sentirse solo','Rupturas'],
+    {id:'luis',bio:'El primer año puede sentirse muy solo. No tiene que ser así.',nombre:'Luis',anio:'4.º',carrera:'Comunicación Social',fac:'FCSH',color:'#6b4c9a',temas:['Sentirse solo','Rupturas'],
       claves:['Sentirme solo/a','Una relación'],
       slots:{3:[['18:00','v'],['18:30','v']],5:[['17:00','v'],['17:30','v']]}},
-    {id:'marcela',nombre:'Marcela',anio:'3.º',carrera:'Arquitectura',fac:'FIA',color:'#a0445b',temas:['Ansiedad en exámenes','Dormir mal'],
+    {id:'marcela',bio:'Los exámenes me quitaban el sueño. Hoy sé que hablarlo ayuda.',nombre:'Marcela',anio:'3.º',carrera:'Arquitectura',fac:'FIA',color:'#a0445b',temas:['Ansiedad en exámenes','Dormir mal'],
       claves:['Parciales y carga académica','No sé ponerlo en palabras'],
       slots:{2:[['13:00','vp']],3:[['13:00','vp'],['13:30','vp']],5:[['12:00','vp']]}},
   ];
@@ -936,6 +967,45 @@
     if(!e.target.checkValidity()){e.target.reportValidity();return}
     track('quierePar');e.target.reset();$('#j-ok').hidden=false;
   });
+
+  // ---------- Conoce a quienes te acompañan ----------
+  const PROS=[
+    {nombre:'Carmen Rivas',rol:'Psicóloga supervisora',color:'#3b5b9a',hace:'Supervisa a los pares y recibe las derivaciones.',temas:['Ansiedad','Estrés académico']},
+    {nombre:'Ernesto Molina',rol:'Psicólogo · Clínica UCA',color:'#5a6b8c',hace:'Atiende a estudiantes que necesitan acompañamiento profesional.',temas:['Consejería','Intervención en crisis']},
+  ];
+  const FACN={FIA:'Ingeniería y Arquitectura',FCSH:'Ciencias Sociales y Humanidades',FCEE:'Ciencias Económicas y Empresariales'};
+  let teamF='todos';
+  function renderTeam(){
+    const pares=teamF==='pro'?[]:PEERS.map(p=>`<div class="tm">
+        <div class="photo" style="background:${p.color}">${p.nombre[0]}</div>
+        <b>${p.nombre}</b><span class="role">Par de escucha</span>
+        <p class="bio">“${p.bio}”</p>
+        <div class="meta">${p.anio} año · ${p.carrera}<br>${FACN[p.fac]}</div>
+        <div class="tags">${p.temas.map(t=>`<span>${t}</span>`).join('')}</div>
+        ${nextLabel(p)}
+        <button class="book" data-id="${p.id}">Agendar con ${p.nombre}</button></div>`);
+    const pros=teamF==='par'?[]:PROS.map(p=>`<div class="tm pro">
+        <div class="photo" style="background:${p.color}">${p.nombre.split(' ').map(w=>w[0]).join('')}</div>
+        <b>${p.nombre}</b><span class="role">${p.rol}</span>
+        <p class="bio" style="font-style:normal">${p.hace}</p>
+        <div class="meta">Departamento de Psicología y Salud Pública</div>
+        <div class="tags">${p.temas.map(t=>`<span>${t}</span>`).join('')}</div>
+        <button class="book" disabled>Cita en la clínica · por confirmar</button></div>`);
+    $('#team').innerHTML=[...pares,...pros].join('');
+    $('#team').querySelectorAll('.book[data-id]').forEach(b=>b.onclick=()=>bookWith(b.dataset.id));
+  }
+  document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
+    teamF=b.dataset.f;document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));renderTeam();
+  });
+  function bookWith(id){
+    track('desdePerfil');
+    form.querySelector('[name=modo][value=elegir]').checked=true;
+    $('#otraFac').checked=false;
+    S.peer=id;S.day=null;S.time=null;
+    renderAll();
+    $('#agenda').scrollIntoView({behavior:'smooth'});
+  }
+  renderTeam();
 
   // ---------- Asistente (simulado: reglas fijas, no un modelo de IA real) ----------
   const RISK=/suicid|matarme|me quiero morir|quiero morir|no quiero vivir|no seguir viviendo|hacerme da[ñn]o|quitarme la vida|cortarme|desaparecer para siempre/i;
