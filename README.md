@@ -18,9 +18,14 @@ Prototipo de *UCA Contigo*, el espacio de escucha entre pares, y de su experimen
 
 Para verlo, abre `prototipo.html` en el navegador.
 
+## Estilo visual
+
+Basado en el *Manual de Imagen Visual* de la UCA (Dirección de Comunicaciones, 2016): azul institucional Pantone 541 (en pantalla se usa #00457C, una aproximación), negro y blanco; nombre de la Universidad en Times New Roman; trama de rombos y barra vertical de las portadas. El logo oficial **no** está dibujado: hay un espacio marcado para insertarlo, porque el manual no permite alterarlo ni extraer sus elementos.
+
 ## Pendiente de confirmar con la UCA
 
 - Contacto de la Clínica de Asistencia Psicológica.
 - Lugar para las conversaciones presenciales.
 - Política de datos.
 - Lista oficial de facultades.
+- Archivo oficial del logo (lo entrega la Dirección de Comunicaciones) y su aprobación del uso de marca para UCA Contigo.
