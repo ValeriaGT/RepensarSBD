@@ -1,6 +1,6 @@
-# RepensarSBD · Habla con un par
+# RepensarSBD · UCA Contigo
 
-Prototipo del experimento *Habla con un par* (Escucha entre pares UCA), del programa Métricas y Estrategias de Producto · Repensar / Strategic Business Design.
+Prototipo de *UCA Contigo*, el espacio de escucha entre pares, y de su experimento *Habla con un par* (Escucha entre pares UCA), del programa Métricas y Estrategias de Producto · Repensar / Strategic Business Design.
 
 **No es el sitio oficial de la UCA.** Los perfiles de pares y los horarios son de ejemplo.
 

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Habla con un par · Prototipo</title>
+<title>UCA Contigo · Prototipo</title>
 <style>
   :root{
     --azul:#0b2a5b; --azul-2:#163f80; --amarillo:#f2b705; --tinta:#1d2433; --gris:#5b6475;
@@ -189,6 +189,23 @@
   .ai-band .col{background:rgba(255,255,255,.07);border-radius:12px;padding:18px}
   .ai-band .col b{display:block;color:#fff;font-size:18px;margin-bottom:6px}
 
+  /* ---------- Red de apoyo ---------- */
+  .red{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:12px}
+  .red > div{background:#fff;border:1px solid var(--linea);border-radius:12px;padding:18px;display:flex;flex-direction:column;border-top:4px solid var(--c,var(--par))}
+  .red h3{margin:0 0 6px;font-size:17px;color:var(--c,var(--par-osc))}
+  .red p{margin:0 0 10px;color:var(--gris);font-size:15px}
+  .red .tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}
+  .red .tags span{font-size:12px;background:var(--fondo);border-radius:999px;padding:3px 9px}
+  .red .status{font-size:13px;font-weight:600;margin-top:auto;display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px}
+  .red .status::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--dot,#9aa3b2)}
+  .red .status.live{--dot:#2e9d5b;color:#1f6b3e}
+  .red .act{margin-top:10px;background:none;border:0;padding:0;color:var(--c,var(--par));font-weight:700;text-align:left;text-decoration:none}
+  .avail{display:block;font-size:12px;color:#1f6b3e;font-weight:600;margin-top:4px}
+  .join{background:var(--par-claro);border-radius:14px;padding:24px;display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:start}
+  .join h2{margin-top:0}
+  .join form{background:#fff;border-radius:12px;padding:16px}
+  .join form .primary{margin-top:12px}
+
   /* ---------- Asistente ---------- */
   .as-wrap{max-width:640px;margin:0 auto;padding:16px 16px 40px;min-height:calc(100vh - 90px);display:flex;flex-direction:column}
   .as-head{display:flex;gap:10px;align-items:center;padding:8px 0 14px;border-bottom:1px solid var(--linea);margin-bottom:14px}
@@ -252,7 +269,7 @@
     .slides{aspect-ratio:4/5}
     .slide.par{flex-direction:column;align-items:flex-start;justify-content:center}
     .slide.par .art,.arrow{display:none}
-    .hero .sec,.booking,.isnot,.ai-band .sec,.card-in .row2{grid-template-columns:1fr}
+    .hero .sec,.booking,.isnot,.ai-band .sec,.card-in .row2,.join{grid-template-columns:1fr}
     .hero .chat{display:none}
     .summary{position:static}
     .who-mode{grid-template-columns:1fr}
@@ -276,10 +293,9 @@
 
   <div class="carousel">
     <div class="slides">
-      <div class="slide generic"><div><h2>Inscripción ciclo 01-2027</h2><p>Banner existente (simulado)</p></div></div>
-      <div class="slide par" id="banner-par" role="link" tabindex="0" aria-label="Habla con un par: conoce el programa y agenda">
+      <div class="slide par" id="banner-par" role="link" tabindex="0" aria-label="UCA Contigo: habla con un par">
         <div class="txt">
-          <span class="kicker">Para estudiantes UCA</span>
+          <span class="kicker">UCA Contigo</span>
           <h2>¿Semana pesada?<br>Habla con un par.</h2>
           <p>Una conversación de 20 a 30 minutos con un estudiante formado para escuchar. Gratis, y anónima si quieres.</p>
           <span class="cta">Conocer y agendar →</span>
@@ -292,6 +308,7 @@
           </div>
         </div>
       </div>
+      <div class="slide generic"><div><h2>Inscripción ciclo 01-2027</h2><p>Banner existente (simulado)</p></div></div>
       <div class="slide generic" style="background:linear-gradient(120deg,#5b2a86,#8a3fb8)"><div><h2>Tutorías de acompañamiento</h2><p>Banner existente (simulado)</p></div></div>
     </div>
     <button class="arrow prev" aria-label="Anterior" onclick="go(-1)">‹</button>
@@ -319,7 +336,7 @@
   <!-- Hero -->
   <div class="hero"><div class="sec">
     <div>
-      <span class="kicker">Escucha entre pares · UCA</span>
+      <span class="kicker">UCA Contigo · Escucha entre pares</span>
       <h1>Pedir ayuda puede ser tan fácil como hablar con un compañero.</h1>
       <p class="lead">Responde tres preguntas, sin dar tu nombre, y te conectamos con un estudiante de otra facultad, formado para escuchar y supervisado por psicólogos. A la hora que te quede bien, incluso de noche.</p>
       <ul class="chips">
@@ -401,6 +418,45 @@
       <div><b>Lejos de tu facultad</b><span>Puedes pedir que te asignen a alguien de otra facultad.</span></div>
       <div><b>Queda entre ustedes</b><span>Lo que cuentas no se comparte con tus profesores ni con tu familia. La única excepción es si tu vida está en riesgo: en ese caso te ayudamos a buscar atención profesional.</span></div>
       <div><b>Solo para medir, sin identificarte</b><span>Te preguntamos año y facultad para saber si el programa funciona, nunca para identificarte. <span class="todo">política de datos por confirmar con la UCA</span></span></div>
+    </div>
+  </div>
+
+  <!-- Red de apoyo -->
+  <div class="sec" id="red" style="padding-top:0">
+    <h2>Tu red de apoyo en la UCA</h2>
+    <p class="sub">Tu par es la puerta de entrada, pero no estás solo/a. Según lo que necesites, hay otras personas en la UCA que pueden acompañarte, y tu par te ayuda a llegar a ellas.</p>
+    <div class="red">
+      <div>
+        <h3>Par de escucha</h3>
+        <p>Para desahogarte u ordenar ideas con un estudiante que te entiende.</p>
+        <div class="tags"><span>Estrés y parciales</span><span>Pensar en dejar la carrera</span><span>Sentirse solo/a</span><span>Familia</span></div>
+        <span class="status live" id="red-next">Hay espacios esta semana</span>
+        <button class="act" onclick="openAssistant()">Empezar · 3 preguntas →</button>
+      </div>
+      <div style="--c:#3b5b9a">
+        <h3>Tutorías de acompañamiento</h3>
+        <p>Para organizarte, mejorar tu método de estudio o manejar la carga académica.</p>
+        <div class="tags"><span>Carga académica</span><span>Método de estudio</span><span>Rendimiento</span></div>
+        <span class="status">Cómo pedirla: <span class="todo">por confirmar</span></span>
+      </div>
+      <div style="--c:#6b4c9a">
+        <h3>Un profe de confianza</h3>
+        <p>Muchos estudiantes tienen un profesor con quien se sienten en confianza. Tu par te ayuda a pensar cómo acercarte.</p>
+        <div class="tags"><span>Dudas de la carrera</span><span>Situaciones personales</span></div>
+        <span class="status">A través de tu par</span>
+      </div>
+      <div style="--c:#2f6f73">
+        <h3>Clínica de Asistencia Psicológica</h3>
+        <p>Cuando necesitas atención profesional: consejería o intervención en crisis.</p>
+        <div class="tags"><span>Consejería</span><span>Intervención en crisis</span></div>
+        <span class="status">Horario y contacto: <span class="todo">por confirmar</span></span>
+      </div>
+      <div style="--c:var(--rojo)">
+        <h3>Urgencias</h3>
+        <p>Si estás en peligro o piensas en hacerte daño, no esperes una cita.</p>
+        <span class="status live">Línea 131 (Minsal)</span>
+        <a class="act" href="tel:131">Llamar al 131 →</a>
+      </div>
     </div>
   </div>
 
@@ -515,22 +571,40 @@
     <details><summary>¿Puedo cancelar?</summary><p>Sí, respondiendo al mensaje de confirmación. No hay penalización.</p></details>
   </div>
 
+  <!-- Quiero ser par -->
+  <div class="sec" style="padding-top:0">
+    <div class="join">
+      <div>
+        <h2>¿Quieres ser par?</h2>
+        <p class="sub" style="margin-bottom:12px">Si estás en años superiores y te gustaría acompañar a otros estudiantes, súmate a la red. Te formamos en escucha y en cómo derivar a tiempo, y te supervisa el Departamento de Psicología y Salud Pública.</p>
+        <p class="sub" style="margin:0">Reconocimiento para los pares (por ejemplo, horas sociales): <span class="todo">por confirmar con la UCA</span></p>
+      </div>
+      <form id="f-join">
+        <label class="q" for="j-nombre">Nombre</label><input type="text" id="j-nombre" required>
+        <label class="q" for="j-carrera">Carrera y año</label><input type="text" id="j-carrera" required>
+        <label class="q" for="j-contacto">Correo institucional</label><input type="text" id="j-contacto" required>
+        <button class="primary" type="submit">Me interesa</button>
+        <p id="j-ok" class="sub" hidden style="margin:10px 0 0">¡Gracias! Te escribiremos con la fecha de la próxima formación.</p>
+      </form>
+    </div>
+  </div>
+
   <footer class="lp-foot"><div class="wrap">
     <span><b>Urgencias:</b> línea 131 (Minsal) · Clínica de Asistencia Psicológica UCA <span class="todo">contacto por confirmar</span></span>
-    <span>Programa piloto · Escucha entre pares UCA, con supervisión del Departamento de Psicología y Salud Pública.</span>
+    <span>UCA Contigo · Programa piloto de escucha entre pares, con supervisión del Departamento de Psicología y Salud Pública.</span>
   </div></footer>
 </section>
 
 <!-- ================= ASISTENTE ================= -->
 <section class="view" id="v-asistente">
   <div class="lp-bar"><div class="wrap">
-    <button class="back" onclick="show('v-landing')">← Habla con un par</button>
+    <button class="back" onclick="show('v-landing')">← UCA Contigo</button>
     <a class="go" href="tel:131" style="background:var(--rojo)">Urgencia · 131</a>
   </div></div>
   <div class="as-wrap">
     <div class="as-head">
       <div class="av">✦</div>
-      <div><b>Asistente de Habla con un par</b><small>Automático, no es una persona · Simulado en este prototipo</small></div>
+      <div><b>Asistente de UCA Contigo</b><small>Automático, no es una persona · Simulado en este prototipo</small></div>
     </div>
     <div class="thread" id="thread" aria-live="polite"></div>
     <form class="compose" id="compose" hidden>
@@ -548,6 +622,14 @@
     <p class="lead">Ya diste el paso más difícil.</p>
     <div class="ticket"><dl id="ticket"></dl></div>
     <p class="lead" id="ok-next"></p>
+    <div class="ticket">
+      <b style="color:var(--par-osc)">Tu red de apoyo en la UCA</b>
+      <ul style="margin:8px 0 0;padding-left:18px;color:var(--gris)">
+        <li><b style="color:var(--tinta)">Tu par</b>, para escucharte.</li>
+        <li><b style="color:var(--tinta)">Tutorías de acompañamiento</b>, si lo que pesa es la carga académica.</li>
+        <li><b style="color:var(--tinta)">Clínica de Asistencia Psicológica</b>, si necesitas atención profesional. Tu par te acompaña a llegar.</li>
+      </ul>
+    </div>
     <p class="lead">Si antes de la cita te sientes en peligro, no esperes: llama a la <b>línea 131</b>.</p>
     <button class="primary" onclick="show('v-encuesta')">Simular: encuesta después de la conversación →</button>
     <p style="text-align:center"><button class="linkbtn" onclick="show('v-home')">Volver al inicio</button></p>
@@ -615,6 +697,8 @@
     <tr><td>Eligieron par</td><td id="m-elige">0</td></tr>
     <tr><td>Pidieron otra facultad</td><td id="m-otra">0</td></tr>
     <tr><td>Primer año</td><td id="m-primero">0</td></tr>
+    <tr class="sep"><td colspan="2">Oferta de pares</td></tr>
+    <tr><td>Quieren ser par</td><td id="m-quierePar">0</td></tr>
   </table>
   <h4>Registro</h4>
   <div class="log" id="log"></div>
@@ -626,11 +710,11 @@
   function show(id){
     document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id===id));
     window.scrollTo(0,0);
-    if(id==='v-home'){set(PAR);startAuto()} else clearInterval(timer);
+    if(id==='v-home') set(PAR);
   }
 
   // ---------- Métricas simuladas ----------
-  const M={vista:0,clic:0,asistente:0,preguntas:0,agenda:0,inicio:0,envio:0,riesgo:0,derivacion:0,viaIA:0,acepta:0,anon:0,elige:0,otra:0,primero:0};
+  const M={vista:0,clic:0,asistente:0,preguntas:0,agenda:0,inicio:0,envio:0,riesgo:0,derivacion:0,viaIA:0,acepta:0,anon:0,elige:0,otra:0,primero:0,quierePar:0};
   const SUB=['anon','elige','otra','primero','viaIA','acepta'];
   function log(t){document.getElementById('log').insertAdjacentHTML('afterbegin',`<div>${new Date().toLocaleTimeString('es',{hour12:false})} · ${t}</div>`)}
   function track(k,detail){
@@ -650,17 +734,17 @@
   const slides=[...document.querySelectorAll('.slide')];
   const PAR=slides.findIndex(s=>s.id==='banner-par');
   const dots=document.getElementById('dots');
-  let cur=0,timer;
-  slides.forEach((_,i)=>{const b=document.createElement('button');b.setAttribute('aria-label','Banner '+(i+1));b.onclick=()=>{set(i);startAuto()};dots.appendChild(b)});
+  // Sin avance automático: UCA Contigo es el banner principal y solo cambia con las flechas o los puntos
+  let cur=0;
+  slides.forEach((_,i)=>{const b=document.createElement('button');b.setAttribute('aria-label','Banner '+(i+1));b.onclick=()=>set(i);dots.appendChild(b)});
   function set(i){
     cur=(i+slides.length)%slides.length;
     slides.forEach((s,j)=>s.classList.toggle('on',j===cur));
     [...dots.children].forEach((d,j)=>d.classList.toggle('on',j===cur));
     if(cur===PAR&&document.getElementById('v-home').classList.contains('on')) track('vista');
   }
-  function go(d){set(cur+d);startAuto()}
-  function startAuto(){clearInterval(timer);timer=setInterval(()=>set(cur+1),5000)}
-  set(PAR); startAuto();
+  function go(d){set(cur+d)}
+  set(PAR);
 
   const banner=document.getElementById('banner-par');
   function openLanding(){track('clic');show('v-landing')}
@@ -745,7 +829,7 @@
         <div><b>${p.nombre}</b><small>${p.anio} año · ${p.carrera}</small></div></div>
         <small>Le han hablado mucho de:</small>
         <div class="tags">${p.temas.map(t=>`<span>${t}</span>`).join('')}</div>
-        <span class="mod">${modTxt}</span></button>`}).join('')
+        <span class="mod">${modTxt}</span>${nextLabel(p)}</button>`}).join('')
       :'<div class="empty">No hay pares que cumplan estos filtros. Prueba con “Me da igual” en la modalidad.</div>';
     box.querySelectorAll('.peer').forEach(b=>b.onclick=()=>{S.peer=b.dataset.id;S.time=null;renderAll()});
   }
@@ -835,6 +919,24 @@
   }
   function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 
+  // ---------- Disponibilidad visible y red de apoyo ----------
+  function firstSlot(p){
+    for(const d of DAYS){const s=(p.slots[d.getDay()]||[])[0];if(s) return {d,t:s[0]}}
+  }
+  function nextLabel(p){
+    const s=firstSlot(p);
+    return s?`<span class="avail">Próximo espacio: ${s.d.toLocaleDateString('es',{weekday:'short',day:'numeric'})}, ${s.t}</span>`:'';
+  }
+  (()=>{
+    const all=PEERS.map(firstSlot).filter(Boolean).sort((a,b)=>a.d-b.d||parseInt(a.t)-parseInt(b.t));
+    if(all[0]) $('#red-next').textContent=`Próximo espacio: ${all[0].d.toLocaleDateString('es',{weekday:'long',day:'numeric'})}, ${all[0].t}`;
+  })();
+  $('#f-join').addEventListener('submit',e=>{
+    e.preventDefault();
+    if(!e.target.checkValidity()){e.target.reportValidity();return}
+    track('quierePar');e.target.reset();$('#j-ok').hidden=false;
+  });
+
   // ---------- Asistente (simulado: reglas fijas, no un modelo de IA real) ----------
   const RISK=/suicid|matarme|me quiero morir|quiero morir|no quiero vivir|no seguir viviendo|hacerme da[ñn]o|quitarme la vida|cortarme|desaparecer para siempre/i;
   const th=$('#thread'), compose=$('#compose');
@@ -864,7 +966,7 @@
     show('v-asistente');track('asistente');
     const my=++flow;
     AS={temas:[],texto:''};th.innerHTML='';compose.hidden=false;
-    await ai('Hola. Soy el asistente de <b>Habla con un par</b>. No soy una persona ni doy consejos de salud: te ayudo a encontrar a un estudiante que te escuche.');
+    await ai('Hola. Soy el asistente de <b>UCA Contigo</b>. No soy una persona ni doy consejos de salud: te ayudo a encontrar a un estudiante que te escuche.');
     await ai('<b>No necesitas darme tu nombre.</b> Son tres preguntas cortas. Toca una opción o escribe con tus palabras.');
     if(my!==flow) return;
     await ai('<b>1 de 3 ·</b> ¿Qué es lo que más te está pesando? Puedes elegir varias.');
