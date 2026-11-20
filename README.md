@@ -8,7 +8,8 @@ Prototipo de *UCA Contigo*, el espacio de escucha entre pares, y de su experimen
 
 - `prototipo.html` — flujo navegable de la demo del pitch:
   1. Portada simulada con el banner → landing del programa.
-  2. **Asistente con IA** (simulado con reglas fijas, sin modelo real): tres preguntas sin pedir nombre, asignación de un par de otra facultad disponible en el horario del estudiante, elección virtual o presencial.
+  2. **Globito de chat** fijo abajo a la izquierda en todas las pantallas: abre el asistente como panel flotante (pantalla completa en celular) y retoma la conversación si se cierra a mitad.
+  3. **Asistente con IA** (simulado con reglas fijas, sin modelo real): tres preguntas sin pedir nombre, asignación de un par de otra facultad disponible en el horario del estudiante, elección virtual o presencial.
   3. **Señales de riesgo**: una pregunta directa si el estudiante dice que le afecta "mucho", y detección de frases de riesgo en texto libre. Muestra la línea 131 y la opción de derivación a la clínica.
   4. Alternativa "Prefiero elegir yo": calendario para elegir par, día y hora.
   5. Confirmación y encuesta posterior a la conversación.

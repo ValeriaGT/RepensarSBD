@@ -19,7 +19,7 @@
   a{color:inherit}
   button{font:inherit;cursor:pointer}
   h1,h2,h3{line-height:1.15}
-  .proto-tag{position:fixed;left:12px;bottom:12px;z-index:50;background:#111;color:#fff;font-size:12px;padding:6px 10px;border-radius:6px;opacity:.85}
+  .proto-tag{position:fixed;left:50%;transform:translateX(-50%);bottom:12px;z-index:50;background:#111;color:#fff;font-size:11px;padding:5px 10px;border-radius:4px;opacity:.8;white-space:nowrap;pointer-events:none}
   .todo{background:#fdecea;color:var(--rojo);border-radius:4px;padding:0 4px;font-size:.9em}
 
   /* ---------- Portada simulada ---------- */
@@ -265,6 +265,28 @@
   .alert .call{display:block;text-align:center;background:var(--rojo);color:#fff;border-radius:4px;padding:12px;font-weight:700;text-decoration:none;margin:10px 0}
   .alert .sec-btn{width:100%;border:1.5px solid var(--par);background:#fff;color:var(--par-osc);border-radius:4px;padding:11px;font-weight:700}
   .ai-note{font-size:12px;color:var(--gris);text-align:center;margin-top:8px}
+
+  /* ---------- Globito y panel de chat ---------- */
+  .fab{position:fixed;left:16px;bottom:16px;z-index:55;display:flex;align-items:center;gap:10px;background:var(--azul);color:#fff;border:0;border-radius:999px;padding:7px 18px 7px 7px;box-shadow:0 8px 24px rgba(0,69,124,.35);font-weight:700;font-size:15px}
+  .fab-ic{position:relative;width:44px;height:44px;border-radius:50%;background:#fff;display:grid;place-items:center;flex:none}
+  .fab-ic::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid #fff;opacity:0;animation:ping 2.4s ease-out 1.5s 3}
+  @keyframes ping{0%{opacity:.8;transform:scale(.9)}100%{opacity:0;transform:scale(1.35)}}
+  .fab .x{display:none;font-size:26px;line-height:1;color:var(--azul)}
+  .fab.open svg{display:none}.fab.open .x{display:block}
+  .chat-panel{position:fixed;left:16px;bottom:84px;z-index:60;width:min(400px,calc(100vw - 32px));height:min(640px,calc(100vh - 110px));background:var(--fondo);border:1px solid var(--linea);border-radius:6px;box-shadow:0 20px 50px rgba(0,0,0,.25);display:flex;flex-direction:column;overflow:hidden;animation:in .2s ease}
+  .cp-head{display:flex;align-items:center;gap:10px;background:var(--azul);color:#fff;padding:12px 14px}
+  .cp-head .av{background:#fff;color:var(--azul);width:34px;height:34px}
+  .cp-title{flex:1;min-width:0}
+  .cp-title small{display:block;color:#DCE4F1;font-size:12px}
+  .cp-131{background:var(--rojo);color:#fff;text-decoration:none;font-weight:700;border-radius:4px;padding:4px 8px;font-size:13px}
+  .cp-close{background:none;border:0;color:#fff;font-size:28px;line-height:1;padding:0 4px}
+  .chat-panel .thread{flex:1;overflow-y:auto;padding:14px}
+  .chat-panel .compose{position:static;margin:0;padding:10px 12px;border-top:1px solid var(--linea);background:#fff}
+  .chat-panel .card-in .row2{grid-template-columns:1fr}
+  @media (max-width:600px){
+    .chat-panel{left:0;right:0;top:0;bottom:0;width:auto;height:auto;border-radius:0;border:0}
+    .fab-txt{display:none}.fab{padding:7px}
+  }
 
   /* ---------- Confirmación y encuesta ---------- */
   .flow{max-width:620px;margin:0 auto;padding:40px 16px 70px}
@@ -636,23 +658,28 @@
 </section>
 
 <!-- ================= ASISTENTE ================= -->
-<section class="view" id="v-asistente">
-  <div class="lp-bar"><div class="wrap">
-    <button class="back" onclick="show('v-landing')">← UCA Contigo</button>
-    <a class="go" href="tel:131" style="background:var(--rojo)">Urgencia · 131</a>
-  </div></div>
-  <div class="as-wrap">
-    <div class="as-head">
-      <div class="av">✦</div>
-      <div><b>Asistente de UCA Contigo</b><small>Automático, no es una persona · Simulado en este prototipo</small></div>
-    </div>
-    <div class="thread" id="thread" aria-live="polite"></div>
-    <form class="compose" id="compose" hidden>
-      <input type="text" id="free" placeholder="Escribe con tus palabras (opcional)" autocomplete="off">
-      <button type="submit">Enviar</button>
-    </form>
+<section class="chat-panel" id="v-asistente" role="dialog" aria-label="Chat de UCA Contigo" hidden>
+  <div class="cp-head">
+    <div class="av">✦</div>
+    <div class="cp-title"><b>UCA Contigo</b><small>Asistente automático (simulado) · no es una persona</small></div>
+    <a class="cp-131" href="tel:131" title="Urgencias: línea 131">Urgencia · 131</a>
+    <button class="cp-close" aria-label="Cerrar chat" onclick="closeAssistant()">×</button>
   </div>
+  <div class="thread" id="thread" aria-live="polite"></div>
+  <form class="compose" id="compose" hidden>
+    <input type="text" id="free" placeholder="Escribe con tus palabras (opcional)" autocomplete="off">
+    <button type="submit">Enviar</button>
+  </form>
 </section>
+
+<!-- Globito fijo para abrir el chat -->
+<button class="fab" id="fab" aria-label="Abrir el chat de UCA Contigo" aria-expanded="false" onclick="toggleAssistant()">
+  <span class="fab-ic">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00457C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.9A8 8 0 1 1 21 12z"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01"/></svg>
+    <span class="x" aria-hidden="true">×</span>
+  </span>
+  <span class="fab-txt">¿Hablamos?</span>
+</button>
 
 <!-- ================= CONFIRMACIÓN ================= -->
 <section class="view" id="v-ok">
@@ -721,6 +748,7 @@
     <tr><td>Banner visto</td><td id="m-vista">0</td></tr>
     <tr><td>Clic en banner</td><td id="m-clic">0</td></tr>
     <tr><td>Abrió el asistente</td><td id="m-asistente">0</td></tr>
+    <tr><td>· desde el globito</td><td id="m-globo">0</td></tr>
     <tr><td>Respondió las 3 preguntas</td><td id="m-preguntas">0</td></tr>
     <tr><td>Llegó a "elegir yo"</td><td id="m-agenda">0</td></tr>
     <tr><td>Empezó a agendar (manual)</td><td id="m-inicio">0</td></tr>
@@ -755,8 +783,8 @@
   }
 
   // ---------- Métricas simuladas ----------
-  const M={vista:0,clic:0,asistente:0,preguntas:0,agenda:0,inicio:0,envio:0,riesgo:0,derivacion:0,viaIA:0,acepta:0,anon:0,elige:0,otra:0,primero:0,quierePar:0,desdePerfil:0};
-  const SUB=['anon','elige','otra','primero','viaIA','acepta','desdePerfil'];
+  const M={vista:0,clic:0,asistente:0,preguntas:0,agenda:0,inicio:0,envio:0,riesgo:0,derivacion:0,viaIA:0,acepta:0,anon:0,elige:0,otra:0,primero:0,quierePar:0,desdePerfil:0,globo:0};
+  const SUB=['anon','elige','otra','primero','viaIA','acepta','desdePerfil','globo'];
   function log(t){document.getElementById('log').insertAdjacentHTML('afterbegin',`<div>${new Date().toLocaleTimeString('es',{hour12:false})} · ${t}</div>`)}
   function track(k,detail){
     M[k]++;
@@ -956,6 +984,7 @@
     if(b.anon) track('anon');
     if(b.otra) track('otra');
     if(b.anio==='1.º') track('primero');
+    if(!panel.hidden||th.childElementCount){flow++;th.innerHTML='';compose.hidden=true;closeAssistant()}
     show('v-ok');
   }
   function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
@@ -1042,8 +1071,18 @@
   }
   const franja=t=>{const h=+t.split(':')[0];return h<12?'Mañana':h<14?'Almuerzo':'Tarde y noche'};
 
-  async function openAssistant(){
-    show('v-asistente');track('asistente');
+  const panel=$('#v-asistente'), fab=$('#fab');
+  function setOpen(o){panel.hidden=!o;fab.classList.toggle('open',o);fab.setAttribute('aria-expanded',o);fab.setAttribute('aria-label',o?'Cerrar el chat':'Abrir el chat de UCA Contigo');fab.querySelector('.fab-txt').textContent=o?'Cerrar':'¿Hablamos?'}
+  function closeAssistant(){setOpen(false)}
+  function toggleAssistant(){panel.hidden?openAssistant('globo'):closeAssistant()}
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden) closeAssistant()});
+
+  // Si hay una conversación en curso, se retoma; si no, empieza una nueva
+  async function openAssistant(origen){
+    setOpen(true);
+    if(origen==='globo') track('globo');
+    if(th.childElementCount) return;
+    track('asistente');
     const my=++flow;
     AS={temas:[],texto:''};th.innerHTML='';compose.hidden=false;
     await ai('Hola. Soy el asistente de <b>UCA Contigo</b>. No soy una persona ni doy consejos de salud: te ayudo a encontrar a un estudiante que te escuche.');
@@ -1093,7 +1132,7 @@
       c.querySelectorAll('select,input,button').forEach(x=>x.disabled=true);
       me(`${AS.anio} año · ${c.querySelector('[data-k=fac]').selectedOptions[0].text} · ${AS.franja}`);
       AS.cands=rankPeers();AS.idx=0;
-      if(!AS.cands.length){await ai('No encontré a nadie disponible con esos filtros. Puedes <button class="linkbtn" onclick="show(\'v-landing\');location.hash=\'agenda\'">elegir tú en el calendario</button>.');return}
+      if(!AS.cands.length){await ai('No encontré a nadie disponible con esos filtros. Puedes <button class="linkbtn" onclick="closeAssistant();show(\'v-landing\');location.hash=\'agenda\'">elegir tú en el calendario</button>.');return}
       await ai('Buscando a alguien de otra facultad, disponible en tu horario…');
       if(my!==flow) return;
       showMatch(my);
@@ -1157,7 +1196,7 @@
     c.addEventListener('input',check);
     drawSlots();
     q('otro').onclick=()=>{c.remove();AS.idx=(AS.idx+1)%AS.cands.length;showMatch(flow)};
-    q('manual').onclick=()=>{show('v-landing');document.getElementById('agenda').scrollIntoView()};
+    q('manual').onclick=()=>{closeAssistant();show('v-landing');document.getElementById('agenda').scrollIntoView()};
     q('ok').onclick=()=>{
       track('viaIA');if(AS.idx===0) track('acepta');
       const alias=q('alias').value.trim();
